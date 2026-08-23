@@ -104,6 +104,7 @@ export function People() {
           person={selected}
           roles={roles}
           isMe={selected.id === user?.id}
+          isLastSeller={isTheLastSeller(selected, people, roles)}
           onClose={() => setSelectedId(null)}
           onChanged={() => void load().catch((err) => toast(describe(err)))}
           onPasswordIssued={(password) => {
@@ -187,6 +188,68 @@ function PersonRow({
   );
 }
 
+/**
+ * Whether switching this account off would leave nobody able to sell.
+ *
+ * Worth asking before the click rather than after. The shop can recover — the
+ * system administrator holds USER_MANAGE and can switch the account back on —
+ * but a shop that cannot ring anything up, staffed by somebody who has just
+ * been told the only role they may grant is "system administrator", is a bad
+ * ten minutes that a sentence prevents.
+ */
+function isTheLastSeller(
+  person: UserSummary,
+  people: UserSummary[],
+  roles: RoleView[],
+): boolean {
+  const canSell = (p: UserSummary) =>
+    roles
+      .filter((r) => p.roles.includes(r.code))
+      .some((r) => r.permissions.includes("SALE_CREATE"));
+
+  if (!person.isActive || !canSell(person)) return false;
+  return people.filter((p) => p.isActive && canSell(p)).length === 1;
+}
+
+/**
+ * Why most of the roles are greyed out.
+ *
+ * The rule is one line — you cannot hand out access you do not hold yourself —
+ * and until now it was only ever said in small grey text under each refused
+ * role, which is not where somebody looks when the list appears mostly
+ * disabled. Said once, at the top, before they start clicking.
+ *
+ * The second sentence is the one that matters on a fresh install. The system
+ * administrator holds nothing commercial by design, so signed in as that
+ * account the only role on offer is another system administrator — and a shop
+ * that has switched its owner off can end up staring at that list wondering
+ * where everybody went.
+ */
+function WhyRolesAreGreyed({ roles }: { roles: RoleView[] }) {
+  const grantable = roles.filter((r) => r.grantable);
+  if (grantable.length === roles.length) return null;
+
+  const canStaffTheFloor = grantable.some((r) => r.permissions.includes("SALE_CREATE"));
+
+  return (
+    <Callout tone={canStaffTheFloor ? "info" : "warn"}>
+      You can hand out {grantable.length} of these {roles.length}. You cannot grant
+      access you do not hold yourself — that is what stops an account being made
+      with more authority than the person making it.
+      {!canStaffTheFloor && (
+        <>
+          {" "}
+          <strong>None of the roles you can grant is able to sell.</strong>{" "}
+          Staffing the floor is the shop owner's account, not this one. If the
+          owner cannot sign in, switch that account back on and reset its
+          password from this screen rather than creating another administrator
+          here.
+        </>
+      )}
+    </Callout>
+  );
+}
+
 /** SALES_STAFF reads as "sales staff" to somebody who does not write code. */
 const roleWords = (code: string) => code.replace(/_/g, " ").toLowerCase();
 
@@ -205,6 +268,7 @@ function PersonPanel({
   person,
   roles,
   isMe,
+  isLastSeller,
   onClose,
   onChanged,
   onPasswordIssued,
@@ -212,6 +276,7 @@ function PersonPanel({
   person: UserSummary;
   roles: RoleView[];
   isMe: boolean;
+  isLastSeller: boolean;
   onClose: () => void;
   onChanged: () => void;
   onPasswordIssued: (password: string) => void;
@@ -294,6 +359,8 @@ function PersonPanel({
           </Callout>
         )}
 
+        {mayAssign && <WhyRolesAreGreyed roles={roles} />}
+
         <div className="grid gap-1.5">
           {roles.map((role) => {
             const ticked = held.includes(role.code);
@@ -358,6 +425,15 @@ function PersonPanel({
           </div>
         )}
       </div>
+
+      {person.isActive && isLastSeller && can("USER_MANAGE") && (
+        <Callout tone="danger">
+          This is the only account left that can sell. Switching it off stops the
+          shop trading, and the system administrator cannot make a replacement —
+          it holds nothing commercial by design, so it can only ever create
+          another system administrator. Give somebody else a selling role first.
+        </Callout>
+      )}
 
       <div className="flex gap-2 flex-wrap items-center pt-3 border-t border-linesoft">
         {can("PASSWORD_RESET") && (
@@ -520,6 +596,7 @@ function NewPerson({
           What they do here
         </span>
         {errors.roles && <span className="text-[13px] text-danger">{errors.roles}</span>}
+        <WhyRolesAreGreyed roles={roles} />
         {roles.map((role) => (
           <label
             key={role.code}
