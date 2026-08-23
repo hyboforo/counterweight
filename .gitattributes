@@ -1,0 +1,25 @@
+# Line endings, and one of these lines is load-bearing.
+#
+# `cmd.exe` reads a batch file by byte offset, so a .bat checked out with LF
+# endings misparses — it eats the first characters of lines and reports things
+# like "'cho.' is not recognized". The shop's start and stop scripts are batch
+# files, so they must arrive as CRLF on every clone, whatever the machine's
+# core.autocrlf happens to be set to.
+#
+# Everything else is LF in the repository, including `mvnw`: the Maven wrapper
+# is a shell script and CRLF makes it unrunnable on Linux and in the container.
+
+* text=auto eol=lf
+
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+*.ps1  text eol=crlf
+
+mvnw     text eol=lf
+mvnw.cmd text eol=crlf
+
+*.jar binary
+*.png binary
+*.jpg binary
+*.ico binary
+*.dump binary

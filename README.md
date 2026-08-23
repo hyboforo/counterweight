@@ -24,6 +24,7 @@ counterweight/
 ├── Dockerfile                builds the till and the server into one image
 ├── docker-compose.prod.yml   what the shop runs: database + application
 ├── start-counterweight.bat   double-click this on the shop PC
+├── stop-counterweight.bat    and this to shut it down
 └── docker-compose.yml        PostgreSQL 16 for local development only
 ```
 
@@ -77,6 +78,20 @@ builds the image, waits until the application is actually answering rather than
 merely started, and opens the till. Running it again is safe — it never
 replaces a key that already exists, because regenerating one signs every till
 out.
+
+**Closing that window does not stop the shop**, and neither does restarting
+Windows: the containers are marked `restart: unless-stopped`, so they come back
+on their own as long as Docker Desktop starts with Windows. To actually shut it
+down:
+
+```
+stop-counterweight.bat
+```
+
+It asks first — somebody may be mid-sale — and deletes nothing. Sales, stock,
+customers and backups live in volumes that outlive the containers, so starting
+again brings the shop back exactly as it was. A sale that was in progress is
+held on the server rather than in the browser, so it survives too.
 
 **Everything is one process on one port.** The web build is copied into the
 server's static resources at image build time, so there is no second web host,

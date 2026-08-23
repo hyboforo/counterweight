@@ -82,12 +82,24 @@ REM
 REM  "Started" from compose means the container exists, not that migrations have
 REM  run. Telling somebody it is ready before it is means they meet an error on
 REM  the first thing they click.
+REM  Two things this loop is careful about, both learned the hard way:
+REM
+REM   - `timeout /t` dies with "Input redirection is not supported" whenever
+REM     stdin is not a console, which is every scheduled task and every script
+REM     that calls this one. `ping` is the sleep that works everywhere.
+REM   - The readiness signal is the container's own HEALTHCHECK rather than an
+REM     HTTP call made from here. Asking Docker needs no web client, no proxy
+REM     settings and no quoting, and it is the same check that decides whether
+REM     the container is restarted.
 echo   Waiting for the shop to come up...
 set /a TRIES=0
+
 :wait
+set "HEALTH="
+for /f "usebackq delims=" %%H in (`docker inspect --format "{{.State.Health.Status}}" bofma-counterweight 2^>nul`) do set "HEALTH=%%H"
+if /i "!HEALTH!"=="healthy" goto ready
+
 set /a TRIES+=1
-powershell -NoProfile -Command "try{$r=Invoke-WebRequest -UseBasicParsing -Uri 'http://localhost:8080/actuator/health' -TimeoutSec 3; if($r.Content -match 'UP'){exit 0}else{exit 1}}catch{exit 1}" >nul 2>&1
-if not errorlevel 1 goto ready
 if !TRIES! GEQ 60 (
   echo.
   echo   It is taking longer than expected. Check what it is saying:
@@ -96,7 +108,7 @@ if !TRIES! GEQ 60 (
   pause
   exit /b 1
 )
-timeout /t 3 /nobreak >nul
+ping -n 4 127.0.0.1 >nul
 goto wait
 
 :ready
@@ -109,7 +121,11 @@ echo     system. Both must set their own password before they can do anything.
 echo     Their first passwords were written to the log once:
 echo         docker compose -f docker-compose.prod.yml logs app ^| findstr /C:"FIRST RUN" /C:"sysadmin" /C:"owner"
 echo.
-echo   To stop the shop:  docker compose -f docker-compose.prod.yml down
+echo   To stop it:  stop-counterweight.bat
+echo.
+echo   You can close this window - the shop keeps running without it. It also
+echo   comes back on its own after a restart, as long as Docker Desktop starts
+echo   with Windows.
 echo.
 
 start "" "http://localhost:8080"

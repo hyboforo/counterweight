@@ -74,7 +74,11 @@ EXPOSE 8080
 
 # `/actuator/health` is unauthenticated by design (SecurityConfig): "is it up"
 # should not need a credential. wget is busybox's, already present.
-HEALTHCHECK --interval=30s --timeout=5s --start-period=90s --retries=3 \
+# Checked often and early on purpose: `start-counterweight.bat` waits on this
+# status rather than making its own HTTP call, so a 90-second start period
+# would leave somebody watching a console long after the shop was serving.
+# The app is up in about ten seconds.
+HEALTHCHECK --interval=10s --timeout=3s --start-period=20s --retries=6 \
     CMD wget -qO- http://127.0.0.1:8080/actuator/health || exit 1
 
 # MaxRAMPercentage rather than a fixed -Xmx: the shop PC is whatever the shop
