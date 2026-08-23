@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Palette.
+ *
+ * Light-first, and that is a decision rather than a default: this shop trades
+ * open-fronted in daylight, where a dark interface fights reflections. Dark is
+ * for the evening.
+ *
+ * The rule that carries the safety content: ACCENT IS COOL, SEMANTICS ARE WARM.
+ * Petrol-teal is the only cool accent, so amber and red mean expiry and hazard
+ * and nothing else. The moment a warm colour is spent on decoration, a WHO IB
+ * band stops reading as danger.
+ */
+:root {
+  --ground:      #EFF1EE;
+  --surface:     #FFFFFF;
+  --surface-2:   #F7F8F6;
+  --ink:         #14181A;
+  --ink-soft:    #5A6468;
+  --ink-faint:   #8A9296;
+  --line:        #D2D7D3;
+  --line-soft:   #E4E7E3;
+
+  --accent:      #0B5563;
+  --accent-2:    #0E7A90;
+  --accent-ink:  #FFFFFF;
+  --accent-wash: #E3EDEF;
+
+  --warn:        #9A5B08;
+  --warn-wash:   #FBEEDB;
+  --danger:      #A8200D;
+  --danger-wash: #FAE6E2;
+  --good:        #1F6B3A;
+  --good-wash:   #E4F0E8;
+
+  --shadow: 0 1px 2px rgba(20, 24, 26, 0.06), 0 8px 24px rgba(20, 24, 26, 0.06);
+}
+
+/* Only tokens are redefined. Guarded so an explicit light choice beats a dark OS. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:      #14181A;
+    --surface:     #1C2124;
+    --surface-2:   #232A2D;
+    --ink:         #EDF1F0;
+    --ink-soft:    #A3ADB1;
+    --ink-faint:   #737E82;
+    --line:        #333C40;
+    --line-soft:   #262E31;
+
+    --accent:      #3FA8BE;
+    --accent-2:    #58C2D8;
+    --accent-ink:  #0A1418;
+    --accent-wash: #16323A;
+
+    --warn:        #E8A34B;
+    --warn-wash:   #3A2C15;
+    --danger:      #F0705A;
+    --danger-wash: #3B1A15;
+    --good:        #6FC38C;
+    --good-wash:   #16301F;
+
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+}
+
+/* And again for the explicit toggle, so it wins in the other direction too. */
+:root[data-theme="dark"] {
+  --ground:      #14181A;
+  --surface:     #1C2124;
+  --surface-2:   #232A2D;
+  --ink:         #EDF1F0;
+  --ink-soft:    #A3ADB1;
+  --ink-faint:   #737E82;
+  --line:        #333C40;
+  --line-soft:   #262E31;
+
+  --accent:      #3FA8BE;
+  --accent-2:    #58C2D8;
+  --accent-ink:  #0A1418;
+  --accent-wash: #16323A;
+
+  --warn:        #E8A34B;
+  --warn-wash:   #3A2C15;
+  --danger:      #F0705A;
+  --danger-wash: #3B1A15;
+  --good:        #6FC38C;
+  --good-wash:   #16301F;
+
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  /* Explicit, from a token. A transparent body borrows the host's ground and
+     renders one theme's text on the other theme's background. */
+  background: var(--ground);
+  color: var(--ink);
+  font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
+}
+
+/* Every figure on a till lines up in a column. */
+.tnum {
+  font-family: "IBM Plex Mono", "Cascadia Mono", Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@keyframes cw-flash {
+  from { background: var(--good-wash); }
+  to   { background: transparent; }
+}
+.just-added { animation: cw-flash 0.5s ease-out; }
+
+@keyframes cw-rise {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+.rise { animation: cw-rise 0.18s ease-out; }

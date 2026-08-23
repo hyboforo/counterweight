@@ -1,0 +1,17 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="WARN">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+    <!-- Testcontainers reports *why* each Docker strategy was rejected at INFO.
+         Without this the only symptom is "Could not find a valid Docker
+         environment", which says nothing actionable. -->
+    <logger name="org.testcontainers" level="INFO"/>
+    <logger name="com.counterweight" level="DEBUG"/>
+</configuration>

@@ -1,0 +1,1884 @@
+<title>Counterweight</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap">
+
+<style>
+/* ─────────────────────────────────────────────────────────
+   Tokens — complete light palette on bare :root.
+   Ground/neutrals biased faintly toward the accent (zinc).
+   Semantic hues are the WHO pesticide hazard bands, which
+   are already meaningful vocabulary in an agro-chem shop.
+   ───────────────────────────────────────────────────────── */
+:root {
+  --ground:      #F4F6F7;
+  --surface:     #FFFFFF;
+  --surface-2:   #EDF1F3;
+  --ink:         #15191D;
+  --ink-2:       #56616B;
+  --ink-3:       #7C8891;
+  --rule:        #D9DFE3;
+  --rule-2:      #C3CCD2;
+
+  --accent:      #0D6A8A;
+  --accent-ink:  #0A5570;
+  --accent-wash: #E3EFF4;
+
+  --band-red:    #B3241C;
+  --band-amber:  #A96A08;
+  --band-blue:   #2A6FA8;
+  --band-green:  #2C7A50;
+  --band-red-wash:   #F8E7E5;
+  --band-amber-wash: #F9EEDC;
+  --band-green-wash: #E4F1E9;
+
+  --code-bg:     #EDF1F3;
+
+  --measure: 68ch;
+  --gap: 1.15rem;
+
+  --f-display: "Archivo", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:      #0E1215;
+    --surface:     #151A1F;
+    --surface-2:   #1B2228;
+    --ink:         #E3E9EC;
+    --ink-2:       #9EAAB4;
+    --ink-3:       #78848D;
+    --rule:        #262E35;
+    --rule-2:      #36414A;
+
+    --accent:      #4FB2D4;
+    --accent-ink:  #7FCBE4;
+    --accent-wash: #12303C;
+
+    --band-red:    #E8736A;
+    --band-amber:  #D9A040;
+    --band-blue:   #6BA8D8;
+    --band-green:  #5FB585;
+    --band-red-wash:   #2E1614;
+    --band-amber-wash: #2B2110;
+    --band-green-wash: #12271B;
+
+    --code-bg:     #1B2228;
+  }
+}
+
+:root[data-theme="dark"] {
+  --ground:      #0E1215;
+  --surface:     #151A1F;
+  --surface-2:   #1B2228;
+  --ink:         #E3E9EC;
+  --ink-2:       #9EAAB4;
+  --ink-3:       #78848D;
+  --rule:        #262E35;
+  --rule-2:      #36414A;
+
+  --accent:      #4FB2D4;
+  --accent-ink:  #7FCBE4;
+  --accent-wash: #12303C;
+
+  --band-red:    #E8736A;
+  --band-amber:  #D9A040;
+  --band-blue:   #6BA8D8;
+  --band-green:  #5FB585;
+  --band-red-wash:   #2E1614;
+  --band-amber-wash: #2B2110;
+  --band-green-wash: #12271B;
+
+  --code-bg:     #1B2228;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 17px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Shell ───────────────────────────────────────────── */
+.shell {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 clamp(1.1rem, 4vw, 2.75rem) 6rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  column-gap: 3.25rem;
+}
+@media (min-width: 1100px) {
+  .shell { grid-template-columns: 200px minmax(0, 1fr); }
+}
+
+/* ── Masthead ────────────────────────────────────────── */
+.masthead {
+  grid-column: 1 / -1;
+  border-bottom: 2px solid var(--ink);
+  padding: clamp(2.5rem, 6vw, 4rem) 0 1.5rem;
+  margin-bottom: 2.5rem;
+}
+.eyebrow {
+  font-family: var(--f-display);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 1rem;
+}
+.masthead h1 {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: clamp(2.4rem, 7vw, 4.1rem);
+  line-height: .98;
+  letter-spacing: -.028em;
+  margin: 0 0 .9rem;
+  text-wrap: balance;
+}
+.masthead .standfirst {
+  font-size: clamp(1.05rem, 2.3vw, 1.24rem);
+  color: var(--ink-2);
+  max-width: 60ch;
+  margin: 0 0 1.9rem;
+}
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+  gap: 1.1rem 1.6rem;
+  font-family: var(--f-display);
+}
+.meta-grid div { display: flex; flex-direction: column; gap: .22rem; }
+.meta-grid dt {
+  font-size: .67rem; font-weight: 600; letter-spacing: .11em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.meta-grid dd { margin: 0; font-size: .9rem; font-weight: 500; color: var(--ink); }
+
+/* ── Section rail ────────────────────────────────────── */
+.rail { display: none; }
+@media (min-width: 1100px) {
+  .rail {
+    display: block;
+    position: sticky;
+    top: 1.75rem;
+    align-self: start;
+    max-height: calc(100vh - 3.5rem);
+    overflow-y: auto;
+    font-family: var(--f-display);
+    font-size: .795rem;
+    line-height: 1.42;
+    padding-right: .5rem;
+  }
+  .rail p {
+    font-size: .65rem; font-weight: 600; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--ink-3);
+    margin: 0 0 .7rem; padding-bottom: .55rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .rail a {
+    display: flex; gap: .55rem;
+    color: var(--ink-2); text-decoration: none;
+    padding: .28rem 0;
+  }
+  .rail a span { color: var(--ink-3); font-variant-numeric: tabular-nums; min-width: 1.15rem; }
+  .rail a:hover { color: var(--accent); }
+  .rail a:hover span { color: var(--accent); }
+  .rail a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+}
+
+/* ── Body column ─────────────────────────────────────── */
+main { min-width: 0; }
+section { margin-bottom: 3.5rem; scroll-margin-top: 1.5rem; }
+
+h2 {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: clamp(1.45rem, 3.4vw, 1.92rem);
+  letter-spacing: -.018em;
+  line-height: 1.14;
+  margin: 0 0 1.15rem;
+  padding-top: 1.15rem;
+  border-top: 1px solid var(--rule-2);
+  text-wrap: balance;
+  display: flex; gap: .8rem; align-items: baseline;
+}
+h2 .num {
+  font-size: .78rem; font-weight: 600; color: var(--accent);
+  letter-spacing: .06em; font-variant-numeric: tabular-nums;
+  flex-shrink: 0; padding-top: .2rem;
+}
+h3 {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 1.06rem;
+  letter-spacing: -.005em;
+  margin: 2.1rem 0 .65rem;
+  color: var(--ink);
+}
+h3 .num { color: var(--ink-3); font-weight: 500; margin-right: .45rem; font-variant-numeric: tabular-nums; }
+h4 {
+  font-family: var(--f-display); font-weight: 600; font-size: .82rem;
+  letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3);
+  margin: 1.6rem 0 .55rem;
+}
+
+p, ul, ol { max-width: var(--measure); }
+p { margin: 0 0 var(--gap); }
+ul, ol { margin: 0 0 var(--gap); padding-left: 1.2rem; }
+li { margin-bottom: .42rem; }
+li::marker { color: var(--ink-3); }
+strong { font-weight: 600; }
+a { color: var(--accent); }
+
+code {
+  font-family: var(--f-mono);
+  font-size: .845em;
+  background: var(--code-bg);
+  padding: .1em .38em;
+  border-radius: 3px;
+  color: var(--ink);
+}
+
+/* ── Full-width data blocks ──────────────────────────── */
+.block { margin: 1.5rem 0 1.9rem; }
+
+.scroller { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+pre {
+  font-family: var(--f-mono);
+  font-size: .775rem;
+  line-height: 1.66;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  padding: 1.05rem 1.15rem;
+  margin: 0;
+  overflow-x: auto;
+  color: var(--ink);
+  tab-size: 2;
+}
+pre code { background: none; padding: 0; font-size: inherit; }
+.pre-label {
+  font-family: var(--f-display); font-size: .655rem; font-weight: 600;
+  letter-spacing: .11em; text-transform: uppercase; color: var(--ink-3);
+  margin-bottom: .45rem;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 480px;
+  font-family: var(--f-display);
+  font-size: .855rem;
+  line-height: 1.45;
+}
+caption {
+  text-align: left;
+  font-family: var(--f-display); font-size: .655rem; font-weight: 600;
+  letter-spacing: .11em; text-transform: uppercase; color: var(--ink-3);
+  padding-bottom: .5rem;
+}
+th, td {
+  text-align: left;
+  padding: .58rem .8rem .58rem 0;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+th {
+  font-weight: 600; font-size: .68rem; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--ink-3);
+  border-bottom: 1px solid var(--rule-2);
+  white-space: nowrap;
+}
+tbody tr:last-child td { border-bottom: none; }
+td.mono, th.mono { font-family: var(--f-mono); font-size: .78rem; }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ── Callouts ────────────────────────────────────────── */
+.note {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-wash);
+  padding: .95rem 1.15rem;
+  margin: 1.5rem 0;
+  max-width: var(--measure);
+}
+.note.warn { border-left-color: var(--band-amber); background: var(--band-amber-wash); }
+.note.risk { border-left-color: var(--band-red);   background: var(--band-red-wash); }
+.note > :last-child { margin-bottom: 0; }
+.note-label {
+  font-family: var(--f-display); font-size: .655rem; font-weight: 700;
+  letter-spacing: .11em; text-transform: uppercase;
+  margin-bottom: .4rem; color: var(--accent-ink);
+}
+.note.warn .note-label { color: var(--band-amber); }
+.note.risk .note-label { color: var(--band-red); }
+
+/* ── Severity pills ──────────────────────────────────── */
+.pill {
+  display: inline-block;
+  font-family: var(--f-display);
+  font-size: .625rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: .16rem .5rem;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.pill.red   { background: var(--band-red-wash);   color: var(--band-red); }
+.pill.amber { background: var(--band-amber-wash); color: var(--band-amber); }
+.pill.green { background: var(--band-green-wash); color: var(--band-green); }
+.pill.blue  { background: var(--accent-wash);     color: var(--accent-ink); }
+
+/* ── Figures ─────────────────────────────────────────── */
+figure { margin: 1.75rem 0; }
+figure svg { display: block; max-width: 100%; height: auto; color: var(--ink-2); }
+figcaption {
+  font-family: var(--f-display); font-size: .78rem; line-height: 1.5;
+  color: var(--ink-3); margin-top: .75rem; max-width: 62ch;
+}
+figcaption b { color: var(--ink-2); font-weight: 600; }
+
+/* ── Decision card ───────────────────────────────────── */
+.adr {
+  border: 1px solid var(--rule-2);
+  background: var(--surface);
+  padding: 1.35rem 1.5rem;
+  margin: 1.5rem 0;
+}
+.adr-head {
+  display: flex; flex-wrap: wrap; gap: .7rem; align-items: baseline;
+  margin-bottom: .9rem; padding-bottom: .75rem;
+  border-bottom: 1px solid var(--rule);
+}
+.adr-head h3 { margin: 0; font-size: 1rem; }
+.adr dl { margin: 0; display: grid; gap: .7rem; }
+.adr dt {
+  font-family: var(--f-display); font-size: .655rem; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3);
+  margin-bottom: .15rem;
+}
+.adr dd { margin: 0; max-width: var(--measure); }
+
+/* ── Phase list ──────────────────────────────────────── */
+.phases { display: grid; gap: 0; margin: 1.5rem 0; }
+.phase {
+  display: grid;
+  grid-template-columns: 3.2rem 1fr;
+  gap: 0 1.15rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--rule);
+  align-items: start;
+}
+.phase:first-child { border-top: 1px solid var(--rule-2); }
+.phase-n {
+  font-family: var(--f-display); font-weight: 700; font-size: 1.55rem;
+  color: var(--rule-2); line-height: 1; font-variant-numeric: tabular-nums;
+  padding-top: .1rem;
+}
+.phase h4 { margin: 0 0 .3rem; text-transform: none; letter-spacing: 0;
+            font-size: .98rem; color: var(--ink); }
+.phase p { margin: 0 0 .35rem; font-size: .92rem; color: var(--ink-2); max-width: 58ch; }
+.phase .wk {
+  font-family: var(--f-display); font-size: .68rem; font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--accent);
+}
+
+/* ── Footer ──────────────────────────────────────────── */
+.colophon {
+  grid-column: 1 / -1;
+  border-top: 2px solid var(--ink);
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  font-family: var(--f-display);
+  font-size: .78rem;
+  color: var(--ink-3);
+  max-width: 62ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+
+<div class="shell">
+
+  <header class="masthead">
+    <p class="eyebrow">System Architecture · Rev A · Draft for review</p>
+    <h1>Counterweight</h1>
+    <p class="standfirst">
+      Point-of-sale and inventory control for a combined hardware and agro-chemical
+      shop. Designed to keep selling when the power and the internet do not.
+    </p>
+    <dl class="meta-grid">
+      <div><dt>Topology</dt><dd>Single LAN server, no cloud</dd></div>
+      <div><dt>Till</dt><dd>Windows PC + local agent</dd></div>
+      <div><dt>Scale</dt><dd>One shop, branch-ready schema</dd></div>
+      <div><dt>Tax posture</dt><dd>Not VAT-registered</dd></div>
+      <div><dt>Platform</dt><dd>Spring Boot 3.3 · PostgreSQL 16</dd></div>
+      <div><dt>Language</dt><dd>ADR-001 — open</dd></div>
+    </dl>
+  </header>
+
+  <nav class="rail" aria-label="Sections">
+    <p>Contents</p>
+    <a href="#s1"><span>1</span> Constraints</a>
+    <a href="#s2"><span>2</span> Domain realities</a>
+    <a href="#s3"><span>3</span> Topology</a>
+    <a href="#s4"><span>4</span> Decisions</a>
+    <a href="#s5"><span>5</span> Stock ledger</a>
+    <a href="#s6"><span>6</span> Catalog</a>
+    <a href="#s7"><span>7</span> Modules</a>
+    <a href="#s8"><span>8</span> Selling</a>
+    <a href="#s9"><span>9</span> Invoicing</a>
+    <a href="#s10"><span>10</span> Printing</a>
+    <a href="#s11"><span>11</span> Alerting</a>
+    <a href="#s12"><span>12</span> Reporting</a>
+    <a href="#s13"><span>13</span> Access &amp; audit</a>
+    <a href="#s14"><span>14</span> Survivability</a>
+    <a href="#s15"><span>15</span> Hardware</a>
+    <a href="#s16"><span>16</span> Delivery</a>
+    <a href="#s17"><span>17</span> Risks</a>
+  </nav>
+
+  <main>
+
+  <!-- ══ 1 ══════════════════════════════════════════ -->
+  <section id="s1">
+    <h2><span class="num">01</span> Constraints that shaped everything</h2>
+
+    <p>
+      Four decisions were taken before design began. Each one closes off options,
+      and the rest of this document is largely a consequence of them.
+    </p>
+
+    <div class="block scroller">
+      <table>
+        <caption>Locked decisions and what they cost</caption>
+        <thead>
+          <tr><th>Decision</th><th>What it buys</th><th>What it costs</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Local server only</strong><br>No cloud component</td>
+            <td>No internet dependency, no hosting bill, no data-egress question, trivially fast queries</td>
+            <td>No off-site redundancy by default, no remote support, no multi-site consolidation. <strong>§14 exists to answer this.</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Windows till + local agent</strong></td>
+            <td>One React codebase; USB, serial, Bluetooth and network printers all supported</td>
+            <td>A second deployable to install and update on every till machine</td>
+          </tr>
+          <tr>
+            <td><strong>One shop, branch-ready</strong></td>
+            <td>Ships sooner; <code>branch_id</code> and transfer semantics already in the schema when a second outlet opens</td>
+            <td>Carrying a column that is a constant today</td>
+          </tr>
+          <tr>
+            <td><strong>Not VAT-registered</strong></td>
+            <td>No GRA integration, no levy arithmetic, simpler receipts</td>
+            <td>Tax engine must be built dormant-but-present, or registration later becomes a migration</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <div class="note-label">Design rule</div>
+      <p>
+        Nothing in the sale path may require a network hop beyond the shop switch.
+        If a feature cannot work with the router unplugged from the world, it is
+        not part of the sale path.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══ 2 ══════════════════════════════════════════ -->
+  <section id="s2">
+    <h2><span class="num">02</span> What makes this shop hard</h2>
+
+    <p>
+      A hardware shop and an agro-chemical shop have almost opposite inventory
+      problems, and this business is both. Most off-the-shelf POS systems handle
+      one and fail the other. The data model has to serve both without becoming
+      two systems.
+    </p>
+
+    <h3><span class="num">2.1</span> The hardware side: quantity is not a whole number</h3>
+
+    <ul>
+      <li>
+        <strong>Cut-to-size sales.</strong> Three and a half metres of armoured
+        cable off a 100 m roll. Eleven feet of angle iron. Quantity must be
+        <code>NUMERIC</code>, never <code>INTEGER</code>, all the way through
+        the ledger. Getting this wrong is unrecoverable later.
+      </li>
+      <li>
+        <strong>Purchase unit ≠ stocking unit ≠ selling unit.</strong> Screws
+        arrive in a box of ten packets, are stocked as packets, and are sold as
+        singles. One product, three units, live conversion between them.
+      </li>
+      <li>
+        <strong>Bulk breaking.</strong> Opening a carton is a real stock event that
+        must be recorded, not an implicit side effect of a sale.
+      </li>
+      <li>
+        <strong>Almost nothing is barcoded.</strong> Search by name, by local
+        name, and by short code must be fast enough to use with a customer
+        waiting. Internal barcode labels are generated in-house for the items
+        worth labelling.
+      </li>
+      <li>
+        <strong>Prices are negotiated.</strong> Counter staff discount. That is
+        the trade, not an abuse to be blocked — but it needs a floor derived from
+        cost and a ceiling derived from role.
+      </li>
+      <li>
+        <strong>Contractors buy on credit.</strong> Masons and builders run
+        accounts and settle later. Receivables are a first-class part of the
+        system, not an add-on.
+      </li>
+    </ul>
+
+    <h3><span class="num">2.2</span> The agro-chemical side: stock has a death date</h3>
+
+    <ul>
+      <li>
+        <strong>Batch and expiry are mandatory.</strong> Herbicides, fungicides,
+        treated seed and veterinary products all carry a manufacturer batch and
+        an expiry date. Losing that link is both a commercial and a safety
+        failure.
+      </li>
+      <li>
+        <strong>Picking is FEFO, not FIFO.</strong> First <em>expiry</em> out,
+        which is not the same as first in. The picking rule is a property of the
+        product, not a global setting.
+      </li>
+      <li>
+        <strong>Expired stock must become unsellable</strong> automatically at
+        midnight, not by someone remembering.
+      </li>
+      <li>
+        <strong>Regulated product data.</strong> EPA registration number, hazard
+        band, active ingredient and concentration, PPE guidance, re-entry
+        interval. Some of it belongs on the receipt.
+      </li>
+      <li>
+        <strong>Restricted sales may need a buyer register</strong> — who bought
+        what, when, and how much.
+      </li>
+      <li>
+        <strong>Demand is seasonal.</strong> A reorder point computed from a flat
+        trailing average will under-stock every planting season and over-stock
+        every dry one.
+      </li>
+    </ul>
+
+    <div class="note">
+      <div class="note-label">The unifying move</div>
+      <p>
+        These two worlds converge if <strong>every unit of stock in the system
+        belongs to a lot</strong>. Agro-chemicals get a real manufacturer batch
+        with a real expiry. Hardware gets a lot generated automatically at
+        goods-receipt, with a null expiry. One mechanism, one costing rule, one
+        picking engine — and expiry simply stops applying where it is null.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══ 3 ══════════════════════════════════════════ -->
+  <section id="s3">
+    <h2><span class="num">03</span> Deployment topology</h2>
+
+    <p>
+      One machine holds the application and the database. Tills are browsers on
+      the same switch, each paired with a small local agent that owns the
+      peripherals. Nothing in the diagram below crosses the shop's front door.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 860 430" role="img" aria-label="Shop LAN topology: a server box running Spring Boot and PostgreSQL connects over a gigabit switch to two till PCs, each running a browser PWA plus a local printing agent that drives a thermal printer, alongside a scanner. A UPS backs the server and switch, and a backup disk pair attaches to the server.">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+          </marker>
+          <marker id="ar-acc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="#0D6A8A"/>
+          </marker>
+        </defs>
+
+        <!-- boundary -->
+        <rect x="12" y="12" width="836" height="356" rx="4" fill="none"
+              stroke="currentColor" stroke-width="1" stroke-dasharray="5 5" opacity=".42"/>
+        <text x="26" y="34" font-family="Archivo, sans-serif" font-size="11"
+              font-weight="600" fill="currentColor" opacity=".65" letter-spacing="1.2">SHOP PREMISES — NO INTERNET DEPENDENCY</text>
+
+        <!-- server -->
+        <rect x="320" y="58" width="220" height="92" rx="3" fill="none" stroke="#0D6A8A" stroke-width="2"/>
+        <text x="430" y="82" text-anchor="middle" font-family="Archivo, sans-serif" font-size="13" font-weight="700" fill="#0D6A8A">SHOP SERVER</text>
+        <text x="430" y="101" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="currentColor">Spring Boot · serves the PWA</text>
+        <text x="430" y="118" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="currentColor">PostgreSQL 16 · Flyway</text>
+        <text x="430" y="136" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="currentColor">Alert + report workers</text>
+
+        <!-- switch -->
+        <rect x="360" y="190" width="140" height="34" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text x="430" y="212" text-anchor="middle" font-family="Archivo, sans-serif" font-size="12" font-weight="600" fill="currentColor">Gigabit switch</text>
+        <line x1="430" y1="150" x2="430" y2="188" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar)"/>
+
+        <!-- till A -->
+        <rect x="60" y="256" width="230" height="96" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text x="175" y="278" text-anchor="middle" font-family="Archivo, sans-serif" font-size="12" font-weight="700" fill="currentColor">TILL 1 — Windows PC</text>
+        <text x="175" y="297" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="currentColor">Browser · React PWA</text>
+        <rect x="86" y="308" width="178" height="30" rx="2" fill="none" stroke="#0D6A8A" stroke-width="1.5"/>
+        <text x="175" y="327" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" font-weight="600" fill="#0D6A8A">pos-agent :9110</text>
+
+        <!-- till B -->
+        <rect x="570" y="256" width="230" height="96" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text x="685" y="278" text-anchor="middle" font-family="Archivo, sans-serif" font-size="12" font-weight="700" fill="currentColor">TILL 2 — Windows PC</text>
+        <text x="685" y="297" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="currentColor">Browser · React PWA</text>
+        <rect x="596" y="308" width="178" height="30" rx="2" fill="none" stroke="#0D6A8A" stroke-width="1.5"/>
+        <text x="685" y="327" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" font-weight="600" fill="#0D6A8A">pos-agent :9110</text>
+
+        <!-- links -->
+        <path d="M360 207 L175 207 L175 254" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar)"/>
+        <path d="M500 207 L685 207 L685 254" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar)"/>
+        <text x="250" y="200" text-anchor="middle" font-family="Archivo, sans-serif" font-size="10" fill="currentColor" opacity=".8">HTTPS · wired</text>
+        <text x="612" y="200" text-anchor="middle" font-family="Archivo, sans-serif" font-size="10" fill="currentColor" opacity=".8">HTTPS · wired</text>
+
+        <!-- peripherals -->
+        <text x="175" y="392" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="#0D6A8A" font-weight="600">USB / BT / TCP 9100</text>
+        <text x="175" y="410" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="currentColor">thermal printer · scanner</text>
+        <line x1="175" y1="340" x2="175" y2="378" stroke="#0D6A8A" stroke-width="1.5" marker-end="url(#ar-acc)"/>
+
+        <text x="685" y="392" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="#0D6A8A" font-weight="600">USB / BT / TCP 9100</text>
+        <text x="685" y="410" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="currentColor">thermal printer · scanner</text>
+        <line x1="685" y1="340" x2="685" y2="378" stroke="#0D6A8A" stroke-width="1.5" marker-end="url(#ar-acc)"/>
+
+        <!-- ups + backup -->
+        <rect x="620" y="58" width="180" height="40" rx="3" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".8"/>
+        <text x="710" y="83" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="currentColor">UPS → server + switch</text>
+        <line x1="618" y1="78" x2="544" y2="78" stroke="currentColor" stroke-width="1.2" opacity=".8" marker-end="url(#ar)"/>
+
+        <rect x="620" y="112" width="180" height="40" rx="3" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".8"/>
+        <text x="710" y="137" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="currentColor">Backup disks (rotating)</text>
+        <line x1="544" y1="132" x2="618" y2="132" stroke="currentColor" stroke-width="1.2" opacity=".8" marker-end="url(#ar)"/>
+
+        <rect x="60" y="58" width="230" height="92" rx="3" fill="none" stroke="currentColor" stroke-width="1" opacity=".55"/>
+        <text x="175" y="82" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" font-weight="600" fill="currentColor" opacity=".75">OPTIONAL, NEVER REQUIRED</text>
+        <text x="175" y="103" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="currentColor" opacity=".75">SMS gateway for alerts</text>
+        <text x="175" y="121" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="currentColor" opacity=".75">Off-site encrypted backup</text>
+        <text x="175" y="139" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="currentColor" opacity=".75">Queue-and-forward only</text>
+        <line x1="292" y1="104" x2="318" y2="104" stroke="currentColor" stroke-width="1" opacity=".55" stroke-dasharray="4 3" marker-end="url(#ar)"/>
+      </svg>
+      <figcaption>
+        <b>Everything load-bearing sits inside the dashed boundary.</b> The two
+        optional outbound channels on the left are strictly queue-and-forward:
+        they drain when a connection happens to exist and are never awaited by
+        anything on the sale path.
+      </figcaption>
+    </figure>
+
+    <h3><span class="num">3.1</span> Why the till is a browser and not a desktop app</h3>
+    <p>
+      A packaged desktop app would put printing in-process and remove the agent
+      entirely. It would also mean shipping a new binary to every till for every
+      change. Splitting the concern keeps the fast-moving part — the selling UI —
+      behind a browser refresh, and confines the slow-moving part — driver
+      quirks, ESC/POS byte encoding — to an agent that changes
+      perhaps twice a year.
+    </p>
+  </section>
+
+  <!-- ══ 4 ══════════════════════════════════════════ -->
+  <section id="s4">
+    <h2><span class="num">04</span> Decision record</h2>
+
+    <div class="adr">
+      <div class="adr-head">
+        <h3>ADR-001 · Implementation language</h3>
+        <span class="pill amber">Open</span>
+      </div>
+      <dl>
+        <dt>Context</dt>
+        <dd>
+          The existing <code>gig-gha-identity</code> service is Kotlin on Spring
+          Boot 3.3 / JVM 21, documented as a deliberate stack choice, with three
+          or four contributors in its history.
+        </dd>
+        <dt>Assessment</dt>
+        <dd>
+          On Java 21 the technical case is close to a wash. Records cover DTOs;
+          sealed interfaces with pattern matching cover closed hierarchies.
+          Kotlin's residual advantages are compile-time null safety and
+          <code>@JvmInline value class</code> — real, but narrower than they were
+          before Java 21, and weakest exactly at the JPA and Jackson boundaries
+          where most production nulls originate.
+        </dd>
+        <dt>Deciding factor</dt>
+        <dd>
+          <strong>Who maintains this in three years.</strong> If the current team
+          builds and keeps it, Kotlin — ramp-up is zero. If it is likely to pass
+          to the shop's own IT contact, a local contractor, or a junior hire,
+          Java 21 — deeper hiring pool, Java-first documentation, no JPA or kapt
+          friction.
+        </dd>
+        <dt>Consequence either way</dt>
+        <dd>
+          Nothing else in this document depends on the answer. The schema, the
+          ledger semantics, the agent protocol and the module boundaries are
+          language-neutral. Snippets below are Kotlin because that is the current
+          house stack; they translate directly.
+        </dd>
+      </dl>
+    </div>
+
+    <div class="block scroller">
+      <table>
+        <caption>Settled decisions</caption>
+        <thead><tr><th>#</th><th>Decision</th><th>Rationale</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">002</td><td>Stock is an append-only ledger; balances are derived</td><td>Auditability, correct stock-take reconciliation, and database-level oversell protection. <a href="#s5">§5</a></td></tr>
+          <tr><td class="mono">003</td><td>Every on-hand quantity belongs to a lot</td><td>One mechanism serves batch-tracked agro-chemicals and untracked hardware. <a href="#s2">§2.2</a></td></tr>
+          <tr><td class="mono">004</td><td>Cost is carried on the lot; issue cost is the lot's cost</td><td>Effectively FIFO/FEFO layering without maintaining separate cost layers</td></tr>
+          <tr><td class="mono">005</td><td>Categories are a tree; attributes are JSONB driven by category definitions</td><td>Adding a category and its fields is data entry, never a migration. <a href="#s6">§6</a></td></tr>
+          <tr><td class="mono">006</td><td>Server emits a structured print document; the agent encodes ESC/POS</td><td>Printer-model quirks stay in one replaceable place. <a href="#s10">§10</a></td></tr>
+          <tr><td class="mono">007</td><td>Tax engine built and wired, configured to a zero scheme</td><td>VAT registration later becomes configuration, not a schema change</td></tr>
+          <tr><td class="mono">008</td><td>Sale completion is idempotent on a client-supplied key</td><td>A double-click or a LAN blip must not deduct stock twice. <a href="#s8">§8.3</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══ 5 ══════════════════════════════════════════ -->
+  <section id="s5">
+    <h2><span class="num">05</span> The stock ledger</h2>
+
+    <p>
+      This is the single most consequential decision in the system, so it comes
+      before the module map.
+    </p>
+
+    <p>
+      <strong>Stock quantity is never updated in place.</strong> There is no
+      <code>UPDATE product SET qty = qty - 1</code> anywhere in the codebase.
+      Every change to on-hand stock is an immutable, signed row in
+      <code>stock_movement</code>, and the current balance is a derived value
+      maintained by a database trigger.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 800 300" role="img" aria-label="Stock ledger flow: goods receipt, sale, adjustment, stock take and write-off all append signed rows to an immutable stock_movement table, which a trigger folds into a stock_balance table carrying a non-negative check constraint. A nightly job re-sums the ledger and asserts it equals the balance.">
+        <defs>
+          <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+          </marker>
+          <marker id="ar2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="#0D6A8A"/>
+          </marker>
+        </defs>
+
+        <text x="14" y="26" font-family="Archivo, sans-serif" font-size="10" font-weight="600" letter-spacing="1.1" fill="currentColor" opacity=".62">WRITERS</text>
+
+        <rect x="14" y="40" width="132" height="30" rx="2" fill="none" stroke="currentColor" stroke-width="1.3"/>
+        <text x="80" y="60" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="currentColor">Goods receipt  +</text>
+
+        <rect x="14" y="80" width="132" height="30" rx="2" fill="none" stroke="currentColor" stroke-width="1.3"/>
+        <text x="80" y="100" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="currentColor">Sale issue  −</text>
+
+        <rect x="14" y="120" width="132" height="30" rx="2" fill="none" stroke="currentColor" stroke-width="1.3"/>
+        <text x="80" y="140" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="currentColor">Return  +</text>
+
+        <rect x="14" y="160" width="132" height="30" rx="2" fill="none" stroke="currentColor" stroke-width="1.3"/>
+        <text x="80" y="180" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="currentColor">Bulk break  ± </text>
+
+        <rect x="14" y="200" width="132" height="30" rx="2" fill="none" stroke="currentColor" stroke-width="1.3"/>
+        <text x="80" y="220" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="currentColor">Stock take  ±</text>
+
+        <rect x="14" y="240" width="132" height="30" rx="2" fill="none" stroke="currentColor" stroke-width="1.3"/>
+        <text x="80" y="260" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="currentColor">Expiry write-off  −</text>
+
+        <path d="M148 55 L215 55 L215 140" fill="none" stroke="currentColor" stroke-width="1.2"/>
+        <path d="M148 95 L215 95" fill="none" stroke="currentColor" stroke-width="1.2"/>
+        <path d="M148 135 L215 135" fill="none" stroke="currentColor" stroke-width="1.2"/>
+        <path d="M148 175 L215 175" fill="none" stroke="currentColor" stroke-width="1.2"/>
+        <path d="M148 215 L215 215 L215 150" fill="none" stroke="currentColor" stroke-width="1.2"/>
+        <path d="M148 255 L215 255 L215 220" fill="none" stroke="currentColor" stroke-width="1.2"/>
+        <line x1="215" y1="145" x2="268" y2="145" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar2)"/>
+        <text x="240" y="136" text-anchor="middle" font-family="Archivo, sans-serif" font-size="10" fill="currentColor" opacity=".85">INSERT</text>
+
+        <!-- ledger -->
+        <rect x="272" y="92" width="200" height="106" rx="3" fill="none" stroke="#0D6A8A" stroke-width="2"/>
+        <text x="372" y="118" text-anchor="middle" font-family="Archivo, sans-serif" font-size="12" font-weight="700" fill="#0D6A8A">stock_movement</text>
+        <text x="372" y="138" text-anchor="middle" font-family="Archivo, sans-serif" font-size="10.5" fill="currentColor">append-only · signed qty</text>
+        <text x="372" y="155" text-anchor="middle" font-family="Archivo, sans-serif" font-size="10.5" fill="currentColor">no UPDATE · no DELETE</text>
+        <text x="372" y="176" text-anchor="middle" font-family="Archivo, sans-serif" font-size="10.5" fill="currentColor">who · when · why · cost</text>
+
+        <line x1="474" y1="145" x2="528" y2="145" stroke="#0D6A8A" stroke-width="1.5" marker-end="url(#ar2a)"/>
+        <text x="501" y="136" text-anchor="middle" font-family="Archivo, sans-serif" font-size="10" fill="#0D6A8A" font-weight="600">trigger</text>
+
+        <!-- balance -->
+        <rect x="532" y="100" width="188" height="90" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <text x="626" y="126" text-anchor="middle" font-family="Archivo, sans-serif" font-size="12" font-weight="700" fill="currentColor">stock_balance</text>
+        <text x="626" y="146" text-anchor="middle" font-family="Archivo, sans-serif" font-size="10.5" fill="currentColor">derived · per lot</text>
+        <text x="626" y="167" text-anchor="middle" font-family="Archivo, sans-serif" font-size="10.5" font-weight="600" fill="#0D6A8A">CHECK qty &gt;= 0</text>
+
+        <!-- reconcile -->
+        <path d="M372 200 L372 250 L626 250 L626 194" fill="none" stroke="currentColor"
+              stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ar2)"/>
+        <text x="499" y="270" text-anchor="middle" font-family="Archivo, sans-serif" font-size="10.5" fill="currentColor" opacity=".85">nightly: SUM(qty_base) per lot must equal balance, else raise alert</text>
+
+        <text x="626" y="215" text-anchor="middle" font-family="Archivo, sans-serif" font-size="10" fill="currentColor" opacity=".72">oversell fails at the DB, not in a service</text>
+      </svg>
+      <figcaption>
+        <b>The check constraint is the oversell guard.</b> Two cashiers selling
+        the last bag of cement at the same instant does not need application
+        locking — the second transaction violates the constraint and rolls back.
+        The nightly re-sum is a cheap tripwire that catches any code path that
+        somehow bypassed the trigger.
+      </figcaption>
+    </figure>
+
+    <div class="block">
+      <div class="pre-label">Core ledger schema</div>
+      <pre><code>-- Every on-hand quantity in the system belongs to a lot.
+-- Agro-chemicals carry a real manufacturer batch; hardware gets one
+-- generated at goods-receipt with a NULL expiry.
+CREATE TABLE stock_lot (
+  id          BIGSERIAL PRIMARY KEY,
+  branch_id   BIGINT        NOT NULL REFERENCES branch(id),
+  product_id  BIGINT        NOT NULL REFERENCES product(id),
+  lot_code    TEXT          NOT NULL,
+  expires_on  DATE,                          -- NULL = does not expire
+  received_on DATE          NOT NULL,
+  unit_cost   NUMERIC(14,4) NOT NULL,        -- GHS, per BASE uom
+  status      TEXT          NOT NULL DEFAULT 'AVAILABLE',
+                            -- AVAILABLE | QUARANTINED | EXPIRED | WRITTEN_OFF
+  UNIQUE (branch_id, product_id, lot_code)
+);
+CREATE INDEX ON stock_lot (branch_id, product_id, expires_on NULLS LAST);
+
+-- Append-only. Never UPDATE. Never DELETE. A mistake is corrected by
+-- posting a compensating movement, which is itself part of the record.
+CREATE TABLE stock_movement (
+  id            BIGSERIAL     PRIMARY KEY,
+  branch_id     BIGINT        NOT NULL REFERENCES branch(id),
+  lot_id        BIGINT        NOT NULL REFERENCES stock_lot(id),
+  movement_type TEXT          NOT NULL,
+  qty_base      NUMERIC(16,4) NOT NULL,   -- signed, in the product's BASE uom
+  unit_cost     NUMERIC(14,4) NOT NULL,
+  source_type   TEXT          NOT NULL,   -- SALE | GRN | ADJUSTMENT | ...
+  source_id     BIGINT,
+  reason_code   TEXT,                     -- required for adjustments
+  occurred_at   TIMESTAMPTZ   NOT NULL DEFAULT now(),
+  created_by    BIGINT        NOT NULL REFERENCES app_user(id),
+  CONSTRAINT qty_nonzero CHECK (qty_base &lt;&gt; 0)
+);
+CREATE INDEX ON stock_movement (branch_id, lot_id, occurred_at);
+CREATE INDEX ON stock_movement (source_type, source_id);
+
+-- Derived. The balance row is created with the lot, at zero, and thereafter
+-- only ever UPDATEd by an AFTER INSERT trigger on stock_movement. See the
+-- verified note below for why it must not be an INSERT ... ON CONFLICT.
+CREATE TABLE stock_balance (
+  branch_id  BIGINT        NOT NULL,
+  lot_id     BIGINT        NOT NULL,
+  qty_base   NUMERIC(16,4) NOT NULL DEFAULT 0,
+  updated_at TIMESTAMPTZ   NOT NULL DEFAULT now(),
+  PRIMARY KEY (branch_id, lot_id),
+  CONSTRAINT qty_never_negative CHECK (qty_base &gt;= 0)
+);</code></pre>
+    </div>
+
+    <div class="note risk">
+      <div class="note-label">Verified the hard way — do not implement this with ON CONFLICT</div>
+      <p>
+        The obvious way to write the balance trigger is a single
+        <code>INSERT ... ON CONFLICT (branch_id, lot_id) DO UPDATE SET qty_base
+        = stock_balance.qty_base + EXCLUDED.qty_base</code>. <strong>It does not
+        work, and it fails on every sale.</strong>
+      </p>
+      <p>
+        PostgreSQL evaluates <code>CHECK</code> constraints against the proposed
+        tuple <em>before</em> the arbiter index is consulted and the
+        <code>DO UPDATE</code> path is taken. A movement of &minus;3.5 against a
+        lot holding 96.5 therefore trips <code>qty_never_negative</code> on the
+        proposed row (&minus;3.5) and never reaches the update that would have
+        produced 93.
+      </p>
+      <p>
+        The working design creates the balance row at zero when the lot is
+        created, so the movement trigger is a <strong>pure UPDATE</strong>. That
+        also removes an insert race, and the row lock the UPDATE takes is
+        precisely what serialises two tills racing for the last unit.
+      </p>
+    </div>
+
+    <h3><span class="num">5.1</span> Movement types</h3>
+
+    <div class="block scroller">
+      <table>
+        <caption>Complete movement vocabulary</caption>
+        <thead><tr><th>Type</th><th>Sign</th><th>Raised by</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">RECEIPT</td><td>+</td><td>Goods receipt against a purchase order</td><td>Creates the lot</td></tr>
+          <tr><td class="mono">SALE_ISSUE</td><td>−</td><td>Sale completion</td><td>Lot chosen by the product's picking rule</td></tr>
+          <tr><td class="mono">SALE_RETURN</td><td>+</td><td>Customer return</td><td>Returns to the original lot where known</td></tr>
+          <tr><td class="mono">SUPPLIER_RETURN</td><td>−</td><td>Return to supplier</td><td>Requires reason code</td></tr>
+          <tr><td class="mono">ADJUST_IN / ADJUST_OUT</td><td>±</td><td>Manual correction</td><td>Reason code mandatory, supervisor approval</td></tr>
+          <tr><td class="mono">BULK_BREAK_OUT / _IN</td><td>±</td><td>Opening a carton into packets</td><td>Paired rows, net cost zero</td></tr>
+          <tr><td class="mono">TRANSFER_OUT / _IN</td><td>±</td><td>Branch transfer</td><td>Dormant until branch two exists</td></tr>
+          <tr><td class="mono">STOCK_TAKE</td><td>±</td><td>Physical count posting</td><td>Variance is the movement</td></tr>
+          <tr><td class="mono">EXPIRY_WRITE_OFF</td><td>−</td><td>Nightly expiry job</td><td>Automatic, agro-chemicals</td></tr>
+          <tr><td class="mono">DAMAGE_WRITE_OFF</td><td>−</td><td>Breakage, spillage, theft</td><td>Reason code mandatory</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3><span class="num">5.2</span> Picking rule</h3>
+    <p>
+      Which lot a sale draws from is a property of the product, not a global
+      setting. Agro-chemicals use FEFO so the stock closest to expiry moves
+      first; hardware uses FIFO so cost flows in receipt order; a handful of
+      items are picked manually because the cashier can see which pile is which.
+    </p>
+
+    <div class="block">
+      <div class="pre-label">Picking, in the domain layer</div>
+      <pre><code>sealed interface PickingRule {
+    data object Fefo   : PickingRule   // agro-chemicals: nearest expiry first
+    data object Fifo   : PickingRule   // hardware: oldest receipt first
+    data object Manual : PickingRule   // cashier names the lot
+}
+
+fun List&lt;StockLot&gt;.pickFor(rule: PickingRule): List&lt;StockLot&gt; =
+    filter { it.status == LotStatus.AVAILABLE }
+        .let { available -&gt;
+            when (rule) {
+                PickingRule.Fefo   -&gt; available.sortedWith(
+                        compareBy(nullsLast()) { it.expiresOn })
+                PickingRule.Fifo   -&gt; available.sortedBy { it.receivedOn }
+                PickingRule.Manual -&gt; available
+            }
+        }</code></pre>
+    </div>
+
+    <div class="note warn">
+      <div class="note-label">Non-obvious consequence</div>
+      <p>
+        Because cost lives on the lot and issue cost is the lot's cost, margin
+        reporting is automatically correct per sale line without maintaining
+        separate cost layers. But it also means <strong>a lot's cost can never be
+        edited after movements exist against it</strong>. Correcting a mis-keyed
+        purchase price requires a compensating adjustment pair, not an
+        <code>UPDATE</code>. Build that correction screen in Phase 1 or
+        storekeepers will invent worse workarounds.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══ 6 ══════════════════════════════════════════ -->
+  <section id="s6">
+    <h2><span class="num">06</span> Catalog, categories and units</h2>
+
+    <h3><span class="num">6.1</span> Adding a category must never be a migration</h3>
+
+    <p>
+      The requirement is that new product categories can be added freely. The
+      trap is that a genuinely new category usually brings genuinely new fields
+      with it — a cable has conductor size and core count; a herbicide has active
+      ingredient, concentration and an EPA registration number. If those fields
+      are columns, every new category is a schema change and a deploy.
+    </p>
+
+    <p>
+      Categories are therefore an <code>ltree</code> hierarchy, and each category
+      declares the attributes its products carry. Product attribute values live
+      in a single indexed <code>JSONB</code> column, validated at write time
+      against the declarations inherited down the tree path.
+    </p>
+
+    <div class="block">
+      <div class="pre-label">Category and attribute schema</div>
+      <pre><code>CREATE EXTENSION IF NOT EXISTS ltree;
+
+CREATE TABLE category (
+  id        BIGSERIAL PRIMARY KEY,
+  parent_id BIGINT REFERENCES category(id),
+  code      TEXT   NOT NULL UNIQUE,
+  name      TEXT   NOT NULL,
+  path      LTREE  NOT NULL,          -- e.g. agro.herbicide.selective
+  kind      TEXT   NOT NULL DEFAULT 'GENERAL'  -- GENERAL | AGROCHEMICAL
+);
+CREATE INDEX ON category USING GIST (path);
+
+-- Declaring a category's fields is data entry, not DDL.
+CREATE TABLE category_attribute (
+  id          BIGSERIAL PRIMARY KEY,
+  category_id BIGINT NOT NULL REFERENCES category(id) ON DELETE CASCADE,
+  key         TEXT   NOT NULL,
+  label       TEXT   NOT NULL,
+  data_type   TEXT   NOT NULL,        -- TEXT | NUMBER | BOOL | DATE | ENUM
+  enum_values TEXT[],
+  unit        TEXT,                   -- 'mm²', 'g/L', 'days'
+  required    BOOLEAN NOT NULL DEFAULT false,
+  sort_order  INT     NOT NULL DEFAULT 0,
+  UNIQUE (category_id, key)
+);
+
+ALTER TABLE product ADD COLUMN attributes JSONB NOT NULL DEFAULT '{}';
+CREATE INDEX ON product USING GIN (attributes jsonb_path_ops);</code></pre>
+    </div>
+
+    <p>
+      A category inherits every attribute declared above it on its path, so
+      <code>agro.herbicide.selective</code> picks up the hazard band and EPA
+      number declared once on <code>agro</code>. The product form is generated
+      from the resolved declaration set; the same set drives filtering and the
+      columns offered in reports.
+    </p>
+
+    <div class="note">
+      <div class="note-label">Why JSONB over EAV</div>
+      <p>
+        A classic entity-attribute-value table gives referential tidiness and
+        costs a join per attribute plus a pivot for every listing screen. JSONB
+        with a GIN index gives single-row reads, indexed containment queries, and
+        a document that maps straight onto the API payload. The tradeoff is that
+        validation moves into the application — which is why the declarations
+        table exists rather than letting the JSONB be free-form.
+      </p>
+    </div>
+
+    <h3><span class="num">6.2</span> Units of measure</h3>
+
+    <p>
+      Each product has exactly one <strong>base</strong> unit, and the ledger
+      speaks only in base units. Every other unit is a conversion factor onto it.
+      Purchase and sale both convert at the edges.
+    </p>
+
+    <div class="block">
+      <div class="pre-label">Unit conversion</div>
+      <pre><code>CREATE TABLE product_uom (
+  id         BIGSERIAL PRIMARY KEY,
+  product_id BIGINT NOT NULL REFERENCES product(id) ON DELETE CASCADE,
+  uom_id     BIGINT NOT NULL REFERENCES uom(id),
+  factor     NUMERIC(16,6) NOT NULL,  -- base units contained in one of these
+  is_base    BOOLEAN NOT NULL DEFAULT false,
+  sellable   BOOLEAN NOT NULL DEFAULT true,
+  purchasable BOOLEAN NOT NULL DEFAULT true,
+  barcode    TEXT,
+  UNIQUE (product_id, uom_id),
+  CONSTRAINT factor_positive CHECK (factor &gt; 0)
+);
+-- Exactly one base unit per product.
+CREATE UNIQUE INDEX ON product_uom (product_id) WHERE is_base;</code></pre>
+    </div>
+
+    <div class="block scroller">
+      <table>
+        <caption>Worked example — roofing nails, base unit KG</caption>
+        <thead><tr><th>Unit</th><th class="num">Factor</th><th>Role</th><th>Sold as</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">KG</td><td class="num">1.000000</td><td>Base · sellable</td><td>Loose, by weight</td></tr>
+          <tr><td class="mono">OLONKA</td><td class="num">2.500000</td><td>Sellable</td><td>The tin measure customers ask for</td></tr>
+          <tr><td class="mono">BAG_25</td><td class="num">25.000000</td><td>Purchase · sellable</td><td>Full bag</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Selling three <em>olonka</em> posts <code>qty_base = -7.5</code>. Receiving
+      four bags posts <code>+100</code>. Nothing downstream — valuation,
+      reordering, reporting — ever has to know which unit the counter used.
+    </p>
+
+    <h3><span class="num">6.3</span> Regulated product fields</h3>
+    <p>
+      Products in a category of kind <code>AGROCHEMICAL</code> carry the fields
+      a regulated product needs: EPA registration number, WHO hazard band,
+      active ingredient and concentration, PPE guidance, re-entry interval, and
+      whether the buyer must be recorded. The hazard band drives the colour
+      coding used throughout the UI and on the printed receipt.
+    </p>
+    <p>
+      These are <strong>category attributes declared on the agro root</strong>,
+      not a table of their own. The first design gave them typed columns on a
+      supplementary profile row, and that row was never written by anything —
+      no field on the create request, no service that saved one — so the
+      buyer-record flag read false for every product and the licence control
+      could never fire. Both tests covering it built a profile through the
+      repository, which no production path did: green in CI, dead at the
+      counter. V15 retired the table and moved the declarations to §6.1's
+      mechanism, which validates on write, inherits down the path, and is
+      reachable from the catalogue screen.
+    </p>
+    <p>
+      A category's kind is inherited rather than chosen: a <code>GENERAL</code>
+      category under the agro root is refused. Its products would inherit these
+      fields — and be sold with no expiry to enforce, since batch tracking is
+      decided by the product's own category.
+    </p>
+    <p>
+      <span class="pill red">Band Ia / Ib</span>
+      <span class="pill amber">Band II</span>
+      <span class="pill blue">Band III</span>
+      <span class="pill green">Band U</span>
+    </p>
+  </section>
+
+  <!-- ══ 7 ══════════════════════════════════════════ -->
+  <section id="s7">
+    <h2><span class="num">07</span> Module map</h2>
+
+    <p>
+      Package-by-feature, each module internally layered the way
+      <code>gig-gha-identity</code> already is. Modules communicate through
+      published application events and each other's service interfaces — never
+      through each other's repositories. Spring Modulith is worth adding purely
+      for the boundary test that fails the build when someone reaches across.
+    </p>
+
+    <div class="block scroller">
+      <table>
+        <caption>Modules and what each one owns</caption>
+        <thead><tr><th>Module</th><th>Owns</th><th>Publishes</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">platform</td><td>Branch, configuration, document sequences, backup orchestration</td><td>—</td></tr>
+          <tr><td class="mono">identity</td><td>Users, roles, permissions, supervisor PINs, audit log</td><td><code class="mono">UserAction</code></td></tr>
+          <tr><td class="mono">catalog</td><td>Products, categories, attributes, units, barcodes, regulated profiles</td><td><code class="mono">ProductChanged</code></td></tr>
+          <tr><td class="mono">pricing</td><td>Price lists, effective-dated prices, discount policy, tax schemes</td><td><code class="mono">PriceChanged</code></td></tr>
+          <tr><td class="mono">inventory</td><td>Lots, movements, balances, stock takes, transfers, picking</td><td><code class="mono">StockMoved</code>, <code class="mono">LotExpired</code></td></tr>
+          <tr><td class="mono">purchasing</td><td>Suppliers, purchase orders, goods receipt, supplier returns</td><td><code class="mono">GoodsReceived</code></td></tr>
+          <tr><td class="mono">parties</td><td>Customers, credit limits, contacts</td><td>—</td></tr>
+          <tr><td class="mono">sales</td><td>Cart, sale, payments, returns, voids</td><td><code class="mono">SaleCompleted</code>, <code class="mono">SaleVoided</code></td></tr>
+          <tr><td class="mono">billing</td><td>Quotations, invoices, delivery notes, receipts, statements, ageing</td><td><code class="mono">InvoiceIssued</code></td></tr>
+          <tr><td class="mono">printing</td><td>Print documents, templates, job queue, agent protocol</td><td>—</td></tr>
+          <tr><td class="mono">alerting</td><td>Rules, evaluation, deduplication, notification centre, channels</td><td>—</td></tr>
+          <tr><td class="mono">reporting</td><td>Read models, rollups, exports</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      The event flow that matters: <code>sales</code> publishes
+      <code>SaleCompleted</code>; <code>inventory</code> posts the issue
+      movements; <code>alerting</code> re-evaluates low-stock rules for the
+      affected products; <code>reporting</code> increments the daily rollup;
+      <code>billing</code> issues the document. None of those four know about
+      each other.
+    </p>
+  </section>
+
+  <!-- ══ 8 ══════════════════════════════════════════ -->
+  <section id="s8">
+    <h2><span class="num">08</span> Selling</h2>
+
+    <h3><span class="num">8.1</span> Sale lifecycle</h3>
+    <p>
+      <code>DRAFT → HELD → COMPLETED</code>, then optionally
+      <code>PARTIALLY_RETURNED</code>, <code>RETURNED</code> or
+      <code>VOIDED</code>. <strong>Held sales matter more than they look.</strong>
+      A customer who leaves to fetch money from a mobile-money agent is routine,
+      and their basket must survive on the server, not in browser memory, so any
+      till can recall it.
+    </p>
+
+    <h3><span class="num">8.2</span> Payments</h3>
+    <div class="block scroller">
+      <table>
+        <caption>Tender types</caption>
+        <thead><tr><th>Method</th><th>Captured</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Cash</td><td>Amount tendered, change due</td><td>Change rounding per §8.4</td></tr>
+          <tr><td>Mobile money</td><td>Network, reference, amount</td><td><strong>Manually keyed.</strong> No API — the shop has no internet. The reference the customer reads out is the record.</td></tr>
+          <tr><td>Bank transfer</td><td>Bank, reference</td><td>Reconciled later against statements</td></tr>
+          <tr><td>Cheque</td><td>Bank, number, date</td><td>Held against the customer account until cleared</td></tr>
+          <tr><td>On account</td><td>Customer, credit check</td><td>Blocked above the credit limit without supervisor override</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Split tender is normal, not exceptional: part cash, part mobile money, the
+      remainder on account. The payment table is therefore a collection against
+      the sale, never columns on it.
+    </p>
+
+    <h3><span class="num">8.3</span> Idempotent completion</h3>
+    <p>
+      The till generates a UUID when the operator presses Pay and sends it as an
+      <code>Idempotency-Key</code> header. The server records it against the
+      resulting sale inside the same transaction. A retried request — double
+      click, impatient operator, a switch that dropped a frame — returns the
+      original sale rather than deducting stock a second time.
+    </p>
+
+    <div class="block">
+      <div class="pre-label">Completion guard</div>
+      <pre><code>@Transactional
+fun complete(cmd: CompleteSaleCommand, key: IdempotencyKey): SaleResult {
+    idempotencyRepo.findBySaleKey(key)?.let {
+        return SaleResult.Replayed(saleRepo.getById(it.saleId))
+    }
+
+    val sale = draftRepo.getById(cmd.draftId).also { it.assertOpen() }
+    val allocations = picker.allocate(sale.lines)      // FEFO / FIFO per product
+    inventory.postIssues(allocations, sale.id)         // CHECK constraint guards oversell
+    payments.record(sale, cmd.tenders)
+    val document = billing.issue(sale)
+
+    idempotencyRepo.save(IdempotencyRecord(key, sale.id))
+    events.publish(SaleCompleted(sale.id, sale.branchId, sale.lineProductIds()))
+    return SaleResult.Completed(sale, document)
+}</code></pre>
+    </div>
+
+    <h3><span class="num">8.4</span> Cedi rounding</h3>
+    <p>
+      Line totals compute to two decimals. The <em>payable</em> total rounds to
+      the nearest 5 pesewas, because small coins are scarce and the difference
+      otherwise gets absorbed silently by whoever is at the counter. The
+      adjustment is stored on the sale as <code>rounding_adjustment</code> so the
+      day's cash reconciles exactly. The increment is configuration — set it to
+      <code>0.01</code> to disable.
+    </p>
+
+    <h3><span class="num">8.5</span> Takings</h3>
+    <p>
+      There is no cash drawer in this shop, so there is no session to open
+      against a counted float and nothing to reconcile at the end of the day.
+      A sale records its payments and the till that rang it up; the takings
+      report derives the day's figures from those payments, split by till and
+      tender method.
+    </p>
+    <p>
+      The shrinkage control a cash session would have given is not available
+      here, and nothing else replaces it. What remains is the stock take
+      (§7.4), which catches shrinkage in goods rather than in cash, and the
+      discount and void registers, which catch it at the point it is authorised.
+      If a drawer is ever introduced, the session model is worth rebuilding
+      then — it was removed because the hardware is absent, not because it was
+      the wrong idea.
+    </p>
+  </section>
+
+  <!-- ══ 9 ══════════════════════════════════════════ -->
+  <section id="s9">
+    <h2><span class="num">09</span> Invoicing and customer accounts</h2>
+
+    <p>
+      The shop is not VAT-registered, so the tax engine ships configured to a
+      zero scheme. It is still built: <code>tax_scheme</code>,
+      <code>tax_component</code> and effective-dated <code>tax_rate</code> exist
+      and are joined through on every line. Registering for VAT later becomes
+      inserting rows and flipping a configuration key, rather than a migration
+      against live sales history.
+    </p>
+
+    <div class="block scroller">
+      <table>
+        <caption>Document types</caption>
+        <thead><tr><th>Document</th><th>Purpose</th><th>Numbering</th><th>Print</th></tr></thead>
+        <tbody>
+          <tr><td>Sales receipt</td><td>Cash-and-carry proof of purchase</td><td class="mono">RCT-000001</td><td>Thermal 80 mm</td></tr>
+          <tr><td>Quotation / proforma</td><td>Priced offer, convertible to a sale</td><td class="mono">QUO-000001</td><td>A4</td></tr>
+          <tr><td>Sales invoice</td><td>Credit sale, posts to receivables</td><td class="mono">INV-000001</td><td>A4 + thermal copy</td></tr>
+          <tr><td>Delivery note</td><td>Goods leaving without cash — cement, rods</td><td class="mono">DN-000001</td><td>A4, unpriced option</td></tr>
+          <tr><td>Credit note</td><td>Return or price correction</td><td class="mono">CRN-000001</td><td>A4 + thermal</td></tr>
+          <tr><td>Customer statement</td><td>Period activity and ageing</td><td>—</td><td>A4 / PDF</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Numbering is gapless and allocated inside the issuing transaction from a
+      dedicated sequence table with row-level locking, not from a Postgres
+      <code>SEQUENCE</code> — sequences deliberately leak numbers on rollback,
+      which is exactly what a document register must not do.
+    </p>
+
+    <h4>Receivables</h4>
+    <p>
+      Customers carry a credit limit and payment terms. Ageing buckets are
+      current / 30 / 60 / 90+. Partial payments allocate oldest-first by default
+      with manual override. Two alerts hang off this: approaching credit limit,
+      and invoices past terms — both in <a href="#s11">§11</a>.
+    </p>
+  </section>
+
+  <!-- ══ 10 ══════════════════════════════════════════ -->
+  <section id="s10">
+    <h2><span class="num">10</span> Printing</h2>
+
+    <p>
+      The server never emits ESC/POS bytes. It emits a <strong>print
+      document</strong> — a structured description of what should appear — and
+      the agent on the till turns that into bytes for the specific printer
+      attached to it. Swapping an 80 mm Epson for a 58 mm Xprinter changes agent
+      configuration and nothing else.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 820 260" role="img" aria-label="Print pipeline: the sales module builds a print document, the printing module renders it to a JSON job, the browser posts it to the local agent on port 9110, the agent encodes ESC/POS bytes and writes to the printer over USB, Bluetooth or TCP, then reports status back. Failed jobs spool to disk on the agent for retry.">
+        <defs>
+          <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+          </marker>
+          <marker id="ar3a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="#0D6A8A"/>
+          </marker>
+        </defs>
+
+        <text x="14" y="24" font-family="Archivo, sans-serif" font-size="10" font-weight="600" letter-spacing="1.1" fill="currentColor" opacity=".62">SERVER</text>
+        <text x="404" y="24" font-family="Archivo, sans-serif" font-size="10" font-weight="600" letter-spacing="1.1" fill="currentColor" opacity=".62">TILL MACHINE</text>
+        <line x1="392" y1="8" x2="392" y2="232" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" opacity=".45"/>
+
+        <rect x="14" y="88" width="150" height="58" rx="3" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="89" y="112" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11.5" font-weight="600" fill="currentColor">sales</text>
+        <text x="89" y="130" text-anchor="middle" font-family="Archivo, sans-serif" font-size="10.5" fill="currentColor">builds document</text>
+
+        <rect x="200" y="88" width="172" height="58" rx="3" fill="none" stroke="#0D6A8A" stroke-width="1.8"/>
+        <text x="286" y="112" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11.5" font-weight="700" fill="#0D6A8A">printing</text>
+        <text x="286" y="130" text-anchor="middle" font-family="Archivo, sans-serif" font-size="10.5" fill="currentColor">template → PrintJob JSON</text>
+
+        <line x1="166" y1="117" x2="196" y2="117" stroke="currentColor" stroke-width="1.4" marker-end="url(#ar3)"/>
+
+        <rect x="418" y="52" width="164" height="52" rx="3" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="500" y="74" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11.5" font-weight="600" fill="currentColor">Browser · PWA</text>
+        <text x="500" y="92" text-anchor="middle" font-family="Archivo, sans-serif" font-size="10.5" fill="currentColor">relays the job</text>
+
+        <path d="M374 110 L400 110 L400 80 L414 80" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#ar3)"/>
+
+        <rect x="418" y="128" width="164" height="76" rx="3" fill="none" stroke="#0D6A8A" stroke-width="1.8"/>
+        <text x="500" y="150" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11.5" font-weight="700" fill="#0D6A8A">pos-agent</text>
+        <text x="500" y="168" text-anchor="middle" font-family="Archivo, sans-serif" font-size="10.5" fill="currentColor">127.0.0.1:9110</text>
+        <text x="500" y="186" text-anchor="middle" font-family="Archivo, sans-serif" font-size="10.5" fill="currentColor">encodes ESC/POS · spools</text>
+
+        <line x1="500" y1="106" x2="500" y2="124" stroke="#0D6A8A" stroke-width="1.5" marker-end="url(#ar3a)"/>
+        <text x="590" y="118" text-anchor="start" font-family="Archivo, sans-serif" font-size="10" fill="#0D6A8A">POST /v1/print</text>
+
+        <rect x="640" y="88" width="164" height="58" rx="3" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="722" y="110" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11.5" font-weight="600" fill="currentColor">Printer</text>
+        <text x="722" y="128" text-anchor="middle" font-family="Archivo, sans-serif" font-size="10.5" fill="currentColor">USB · BT · TCP 9100</text>
+
+        <line x1="586" y1="160" x2="636" y2="130" stroke="currentColor" stroke-width="1.4" marker-end="url(#ar3)"/>
+
+        <path d="M700 150 L700 220 L500 220 L500 208" fill="none" stroke="currentColor"
+              stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ar3)"/>
+        <text x="600" y="238" text-anchor="middle" font-family="Archivo, sans-serif" font-size="10.5" fill="currentColor" opacity=".85">paper-out / cover-open / jam → job stays spooled, reprint offered</text>
+      </svg>
+      <figcaption>
+        <b>The dashed return path is the part people forget.</b> A jam or an
+        empty paper roll must not lose a receipt — the job stays spooled on the
+        agent's disk and the till offers a reprint, which is also what makes
+        "reprint last receipt" free rather than a separate feature.
+      </figcaption>
+    </figure>
+
+    <div class="block">
+      <div class="pre-label">Print document model</div>
+      <pre><code>sealed interface PrintElement {
+    data class Line(
+        val text: String,
+        val align: Align = Align.LEFT,
+        val bold: Boolean = false,
+        val doubleHeight: Boolean = false,
+    ) : PrintElement
+
+    /** Left/right pair, dot-filled to the paper width. Prices, totals. */
+    data class Columns(val left: String, val right: String) : PrintElement
+
+    data class Barcode(val value: String, val symbology: Symbology) : PrintElement
+    data class QrCode(val value: String) : PrintElement
+    data class Feed(val lines: Int) : PrintElement
+    data object Rule       : PrintElement
+    data object Cut        : PrintElement
+}
+
+data class PrintJob(
+    val id: UUID,
+    val template: TemplateId,
+    val widthChars: Int,        // 32 for 58 mm, 48 for 80 mm
+    val elements: List&lt;PrintElement&gt;,
+    val copies: Int = 1,
+)</code></pre>
+    </div>
+
+    <h3><span class="num">10.1</span> Agent API</h3>
+    <div class="block">
+      <pre><code>GET  /v1/status        → { paired, printers[], paperOut, coverOpen, queueDepth }
+GET  /v1/printers      → discovered USB / serial / Bluetooth / network devices
+POST /v1/print         ← PrintJob JSON                    → { jobId }
+GET  /v1/jobs/{id}     → QUEUED | PRINTING | DONE | FAILED (+ reason)
+POST /v1/jobs/{id}/retry</code></pre>
+    </div>
+
+    <div class="note">
+      <div class="note-label">Browser detail worth knowing up front</div>
+      <p>
+        Chrome and Edge treat <code>http://127.0.0.1</code> as a potentially
+        trustworthy origin, so an HTTPS page <em>is</em> allowed to call it —
+        this is not blocked as mixed content the way a plain
+        <code>http://</code> host would be. The agent still needs an explicit
+        CORS allow-list for the shop server's origin and a pairing token issued
+        at install, so that a random web page cannot drive the printer.
+        Verify the behaviour on the exact browser build the shop runs before
+        Phase 2 closes.
+      </p>
+    </div>
+
+    <h3><span class="num">10.2</span> What gets printed</h3>
+    <ul>
+      <li><strong>Sales receipt</strong> — lines, tenders, change, and for agro-chemical lines the batch, expiry and hazard band.</li>
+      <li><strong>Shelf and bin labels</strong> with generated internal barcodes.</li>
+      <li><strong>X and Z reports</strong> at shift boundaries.</li>
+      <li><strong>Goods-receipt slip</strong> for the storekeeper to sign.</li>
+      <li><strong>Morning briefing slip</strong> — see <a href="#s11">§11.3</a>. This is the one that turns alerting from a screen nobody opens into something the owner actually reads.</li>
+    </ul>
+  </section>
+
+  <!-- ══ 11 ══════════════════════════════════════════ -->
+  <section id="s11">
+    <h2><span class="num">11</span> Alerting</h2>
+
+    <p>
+      Rules are rows, not code. Each rule has a type, a scope, parameters, a
+      severity and a set of channels. Evaluation is event-driven where a movement
+      can change the answer immediately, and scheduled where it depends on the
+      calendar.
+    </p>
+
+    <div class="block scroller">
+      <table>
+        <caption>Alert catalogue</caption>
+        <thead><tr><th>Alert</th><th>Trigger</th><th>Severity</th><th>When evaluated</th></tr></thead>
+        <tbody>
+          <tr><td>Out of stock</td><td>Balance hits zero</td><td><span class="pill red">Critical</span></td><td>On movement</td></tr>
+          <tr><td>Below reorder point</td><td>Balance &lt; computed reorder point</td><td><span class="pill amber">Warning</span></td><td>On movement</td></tr>
+          <tr><td>Expired stock on hand</td><td>Lot past expiry, still AVAILABLE</td><td><span class="pill red">Critical</span></td><td>Nightly 00:05</td></tr>
+          <tr><td>Expiry approaching</td><td>T−90 / T−60 / T−30 / T−7</td><td><span class="pill amber">Warning</span></td><td>Nightly</td></tr>
+          <tr><td>Ledger mismatch</td><td>Re-summed ledger ≠ stored balance</td><td><span class="pill red">Critical</span></td><td>Nightly</td></tr>
+          <tr><td>Sold below cost</td><td>Line price &lt; lot cost</td><td><span class="pill red">Critical</span></td><td>On sale</td></tr>
+          <tr><td>Discount above threshold</td><td>Exceeds role allowance</td><td><span class="pill amber">Warning</span></td><td>On sale</td></tr>
+          <tr><td>Void spike</td><td>Voids per cashier above baseline</td><td><span class="pill amber">Warning</span></td><td>Hourly</td></tr>
+          <tr><td>Credit limit reached</td><td>Customer balance ≥ limit</td><td><span class="pill amber">Warning</span></td><td>On sale</td></tr>
+          <tr><td>Invoice overdue</td><td>Past terms by N days</td><td><span class="pill amber">Warning</span></td><td>Daily</td></tr>
+          <tr><td>Dead stock</td><td>No movement in N days</td><td><span class="pill blue">Info</span></td><td>Weekly</td></tr>
+          <tr><td>Backup failed or stale</td><td>No verified backup in 24 h</td><td><span class="pill red">Critical</span></td><td>Hourly</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3><span class="num">11.1</span> Fighting alert fatigue</h3>
+    <p>
+      An alerting system that cries daily gets ignored, and then the one that
+      mattered gets ignored too. Three mechanisms, all in the schema:
+    </p>
+    <div class="block">
+      <pre><code>CREATE TABLE alert (
+  id              BIGSERIAL PRIMARY KEY,
+  rule_id         BIGINT      NOT NULL REFERENCES alert_rule(id),
+  dedupe_key      TEXT        NOT NULL,   -- e.g. 'LOW_STOCK:branch1:product482'
+  severity        TEXT        NOT NULL,
+  title           TEXT        NOT NULL,
+  body            TEXT        NOT NULL,
+  subject_type    TEXT, subject_id BIGINT,
+  raised_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
+  acknowledged_at TIMESTAMPTZ, acknowledged_by BIGINT,
+  resolved_at     TIMESTAMPTZ,
+  snoozed_until   TIMESTAMPTZ
+);
+
+-- At most ONE open alert per condition. Re-raising while it is still
+-- open is a no-op, not a new row and not a new notification.
+CREATE UNIQUE INDEX ON alert (dedupe_key) WHERE resolved_at IS NULL;</code></pre>
+    </div>
+    <p>
+      Alerts also <strong>auto-resolve</strong>: restocking above the reorder
+      point closes the low-stock alert without anyone clicking anything. And
+      <code>snoozed_until</code> lets the owner say "I know, the order is coming
+      Thursday" without disabling the rule.
+    </p>
+
+    <h3><span class="num">11.2</span> Reorder points</h3>
+    <p>
+      Recomputed nightly from a trailing 90-day window:
+    </p>
+    <div class="block">
+      <pre><code>reorder_point = ceil(avg_daily_usage × lead_time_days × safety_factor)
+              + safety_stock</code></pre>
+    </div>
+    <p>
+      Every term is overridable per product, because the computed answer is wrong
+      for anything seasonal. Agro-chemical categories additionally carry a
+      per-month seasonal multiplier so the planting-season figure is not derived
+      from dry-season sales. Flag any product where the computed and manual
+      figures diverge sharply — that divergence is usually information.
+    </p>
+
+    <h3><span class="num">11.3</span> Channels, given no internet</h3>
+    <ul>
+      <li><strong>In-app notification centre</strong> — always works, the primary channel.</li>
+      <li><strong>Dashboard badges</strong> — counts by severity on the home screen.</li>
+      <li><strong>Printed morning briefing</strong> — a thermal slip at open of business: what expired overnight, what fell below reorder, yesterday's variance, overdue accounts. In a shop where the owner is on the floor rather than at a screen, this is the channel that actually gets read.</li>
+      <li><strong>SMS</strong> — optional, queue-and-forward, critical severity only, drains whenever a connection exists. Never awaited.</li>
+    </ul>
+  </section>
+
+  <!-- ══ 12 ══════════════════════════════════════════ -->
+  <section id="s12">
+    <h2><span class="num">12</span> Reporting</h2>
+
+    <p>
+      One database serves both trading and analysis, so the discipline is to keep
+      heavy aggregation off the tables the till writes to during opening hours.
+    </p>
+
+    <div class="block scroller">
+      <table>
+        <caption>Report families</caption>
+        <thead><tr><th>Family</th><th>Reports</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Sales</strong></td>
+            <td>Daily takings · by cashier · by shift · by category · by product · by customer · gross margin · hourly heat map</td>
+            <td>Rollup table, incremented on <code class="mono">SaleCompleted</code></td>
+          </tr>
+          <tr>
+            <td><strong>Inventory</strong></td>
+            <td>Stock on hand · valuation at lot cost · movement ledger · slow and dead stock · ABC analysis · expiry ageing</td>
+            <td>Materialised views, refreshed 02:00</td>
+          </tr>
+          <tr>
+            <td><strong>Purchasing</strong></td>
+            <td>Purchases by supplier · price trend per product · lead-time performance · outstanding orders</td>
+            <td>Direct query</td>
+          </tr>
+          <tr>
+            <td><strong>Money</strong></td>
+            <td>Takings by tender · receivables ageing · customer statements · profit summary · discount register</td>
+            <td>Mixed</td>
+          </tr>
+          <tr>
+            <td><strong>Control</strong></td>
+            <td>Void and refund register · price-override log · adjustment register · stock-take variance history</td>
+            <td>Audit log</td>
+          </tr>
+          <tr>
+            <td><strong>Compliance</strong></td>
+            <td>Restricted agro-chemical sales register · batch traceability (which customers received batch X)</td>
+            <td>Direct query</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      <strong>Batch traceability deserves emphasis.</strong> If a manufacturer
+      recalls a batch, "which customers bought from lot 4471" must be one query,
+      not an afternoon with a paper ledger. The lot-based design in
+      <a href="#s5">§5</a> gives this for free — but only if the sale line stores
+      the lot it drew from, so make sure it does.
+    </p>
+
+    <p>
+      Exports are CSV and XLSX via Apache POI, plus A4 PDF. Every report screen
+      also offers a thermal summary for the ones the owner wants in hand.
+    </p>
+  </section>
+
+  <!-- ══ 13 ══════════════════════════════════════════ -->
+  <section id="s13">
+    <h2><span class="num">13</span> Access and audit</h2>
+
+    <div class="block scroller">
+      <table>
+        <caption>Roles</caption>
+        <thead><tr><th>Role</th><th>Can</th><th>Cannot</th></tr></thead>
+        <tbody>
+          <tr><td>Owner</td><td>Everything, including cost prices and margin</td><td>—</td></tr>
+          <tr><td>Manager</td><td>Approve overrides, adjust stock, set prices, all reports</td><td>Change roles, delete audit history</td></tr>
+          <tr><td>Storekeeper</td><td>Receive goods, transfer, count stock, view stock reports</td><td>Sell, see margin, change prices</td></tr>
+          <tr><td>Cashier</td><td>Sell, hold and recall, discount within allowance, print a receipt</td><td>See cost, void after completion, adjust stock</td></tr>
+          <tr><td>Auditor</td><td>Read everything, export</td><td>Write anything</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Permissions are checked, not roles — roles are bundles of permissions, so
+      the owner can build "senior cashier" without a code change. Supervisor
+      override is a PIN entered at the till by someone holding the permission;
+      the override is recorded with both identities, the reason, and the value
+      before and after.
+    </p>
+
+    <p>
+      The audit log is append-only and covers price changes, cost visibility,
+      voids, refunds, stock adjustments, override use, credit-limit changes, and
+      role assignment. Because the whole system sits on one machine in a shop,
+      <strong>physical access is the real threat model</strong>: full-disk
+      encryption on the server, no shared logins, screen lock on the tills, and
+      the database not listening on anything but the LAN interface.
+    </p>
+  </section>
+
+  <!-- ══ 14 ══════════════════════════════════════════ -->
+  <section id="s14">
+    <h2><span class="num">14</span> Survivability</h2>
+
+    <div class="note risk">
+      <div class="note-label">The system's largest single risk</div>
+      <p>
+        "Local server only" means the shop's entire stock position, price history
+        and receivables ledger live on <strong>one machine, in one building</strong>.
+        A failed SSD, a surge, a flood or a burglary is not a bad day — without
+        the measures below it is the end of the business's records. This section
+        is not optional hardening; it is a functional requirement.
+      </p>
+    </div>
+
+    <div class="block scroller">
+      <table>
+        <caption>Backup and recovery</caption>
+        <thead><tr><th>Layer</th><th>Mechanism</th><th>Cadence</th><th>Protects against</th></tr></thead>
+        <tbody>
+          <tr><td>Point-in-time</td><td>WAL archiving to a second physical disk</td><td>Continuous</td><td>Bad write, accidental mass delete</td></tr>
+          <tr><td>Full dump</td><td><code class="mono">pg_dump</code> to a second physical disk</td><td>Nightly</td><td>Primary disk failure</td></tr>
+          <tr><td>Off-site</td><td>Encrypted copy to a rotating pair of USB SSDs, one always off the premises</td><td>Weekly</td><td>Fire, flood, theft</td></tr>
+          <tr><td>Optional remote</td><td>One-way encrypted upload when a connection exists</td><td>Opportunistic</td><td>Both disks lost together</td></tr>
+          <tr><td><strong>Verification</strong></td><td>Automated restore into a scratch database, then row-count and checksum assertions</td><td>Weekly</td><td><strong>Backups that were never actually readable</strong></td></tr>
+          <tr><td>Power</td><td>UPS on server, switch and one till</td><td>Continuous</td><td>Corruption from abrupt shutdown mid-write</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      The verification row is the one that is usually skipped and the one that
+      matters most. An unverified backup is a belief, not a backup. Because the
+      restore drill is automated and its result feeds the alert engine, a silent
+      failure surfaces as a <span class="pill red">Critical</span> alert on the
+      dashboard and on the morning slip within hours instead of being discovered
+      on the day it is needed.
+    </p>
+
+    <h3><span class="num">14.1</span> Degradation ladder</h3>
+    <div class="block scroller">
+      <table>
+        <thead><tr><th>Failure</th><th>Behaviour</th></tr></thead>
+        <tbody>
+          <tr><td>Printer jams or runs out of paper</td><td>Sale completes; job spools; till offers reprint</td></tr>
+          <tr><td>Agent not running</td><td>Sale completes; on-screen receipt with a queued print job</td></tr>
+          <tr><td>One till loses the LAN</td><td>That till is read-only until it reconnects; others unaffected</td></tr>
+          <tr><td>Server down, mains up</td><td><strong>Trading stops.</strong> Documented manual fallback: numbered duplicate book, keyed in on recovery</td></tr>
+          <tr><td>Mains down, UPS holding</td><td>Server, switch and one till keep trading for the UPS window</td></tr>
+          <tr><td>Mains down, UPS exhausted</td><td>Clean automatic shutdown before the battery dies; manual fallback</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      "Server down means trading stops" is the honest cost of the single-server
+      decision. It is acceptable only because the manual fallback is designed and
+      rehearsed rather than improvised. A warm standby machine restoring last
+      night's dump is a modest addition if that cost turns out to bite.
+    </p>
+  </section>
+
+  <!-- ══ 15 ══════════════════════════════════════════ -->
+  <section id="s15">
+    <h2><span class="num">15</span> Hardware</h2>
+
+    <div class="block scroller">
+      <table>
+        <caption>Per-shop bill of materials</caption>
+        <thead><tr><th>Item</th><th>Spec</th><th class="num">Qty</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr><td>Shop server</td><td>Mini-PC, Intel N100 class, 16 GB RAM, 512 GB NVMe</td><td class="num">1</td><td>Fanless, low draw, long UPS runtime</td></tr>
+          <tr><td>Backup disk</td><td>Internal SATA SSD, separate physical device</td><td class="num">1</td><td>Not a partition of the primary</td></tr>
+          <tr><td>Off-site disks</td><td>Rugged USB SSD</td><td class="num">2</td><td>Rotating; one always off-premises</td></tr>
+          <tr><td>Till PC</td><td>Any Windows 10/11 machine</td><td class="num">1–2</td><td>Browser + agent only</td></tr>
+          <tr><td>Receipt printer</td><td>80 mm thermal, ESC/POS, USB</td><td class="num">1 per till</td><td>Epson TM-T20 class or Xprinter/Rongta equivalent</td></tr>
+          <tr><td>Barcode scanner</td><td>USB HID keyboard-wedge</td><td class="num">1 per till</td><td>No driver needed</td></tr>
+          <tr><td>Label printer</td><td>Thermal label, 40 × 25 mm</td><td class="num">1</td><td>Optional; internal SKU labels</td></tr>
+          <tr><td>UPS</td><td>1.5 kVA line-interactive with USB signalling</td><td class="num">1</td><td>Must trigger clean shutdown</td></tr>
+          <tr><td>Switch</td><td>Gigabit, 8-port</td><td class="num">1</td><td>Wired to every till; Wi-Fi is a fallback, not the design</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Two deliberate choices. <strong>Wired, not wireless</strong> — a dropped
+      frame during payment is a support call, and running cable once is cheaper
+      than diagnosing intermittent Wi-Fi forever. <strong>USB HID scanners</strong>
+      — they present as a keyboard, so they need no driver, no agent involvement,
+      and they work in any input field.
+    </p>
+  </section>
+
+  <!-- ══ 16 ══════════════════════════════════════════ -->
+  <section id="s16">
+    <h2><span class="num">16</span> Delivery plan</h2>
+
+    <p>
+      Sequenced so that each phase leaves something the shop could actually use,
+      and so the riskiest unknown — printer hardware — is proven early rather
+      than discovered late.
+    </p>
+
+    <div class="phases">
+      <div class="phase">
+        <div class="phase-n">00</div>
+        <div>
+          <h4>Foundations</h4>
+          <p>Project skeleton, Flyway baseline, branch and configuration, users and roles, audit log, document sequences. ADR-001 settled here.</p>
+          <span class="wk">2 weeks</span>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-n">01</div>
+        <div>
+          <h4>Catalog and the ledger</h4>
+          <p>Products, category tree, dynamic attributes, units and conversion, lots, the movement ledger and its trigger, suppliers, purchase orders, goods receipt, cost-correction screen.</p>
+          <span class="wk">4 weeks</span>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-n">02</div>
+        <div>
+          <h4>Selling and printing</h4>
+          <p>Cart, search, held sales, split tender, idempotent completion, the agent, ESC/POS encoding, receipt templates. Receipts print on request, never automatically. <strong>Buy the real printer before this phase starts.</strong></p>
+          <span class="wk">4 weeks</span>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-n">03</div>
+        <div>
+          <h4>Documents and accounts</h4>
+          <p>Quotations, invoices, delivery notes, credit notes, customer accounts, credit limits, ageing, statements, returns and refunds. Dormant tax engine wired through.</p>
+          <span class="wk">3 weeks</span>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-n">04</div>
+        <div>
+          <h4>Alerting</h4>
+          <p>Rule engine, evaluation workers, deduplication and auto-resolve, notification centre, reorder-point computation, expiry job, morning briefing slip.</p>
+          <span class="wk">2 weeks</span>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-n">05</div>
+        <div>
+          <h4>Reporting</h4>
+          <p>Rollups and materialised views, the six report families, CSV/XLSX/PDF export, dashboard.</p>
+          <span class="wk">3 weeks</span>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-n">06</div>
+        <div>
+          <h4>Stock control and hardening</h4>
+          <p>Stock takes with variance posting, adjustments, transfer scaffolding, backup and verified-restore automation, degradation drill, load test at realistic catalogue size.</p>
+          <span class="wk">2 weeks</span>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-n">07</div>
+        <div>
+          <h4>Data load and pilot</h4>
+          <p>Opening stock count, supplier and customer import, staff training, two weeks running alongside the existing method before cutover.</p>
+          <span class="wk">2–3 weeks</span>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      <strong>Roughly 22–23 weeks for one developer</strong>, and the last phase
+      is the one most often cut and most often regretted. Opening stock count is
+      the single largest source of "the system says we have four, we have none"
+      distrust in the first month, and distrust in month one is very hard to
+      recover from.
+    </p>
+  </section>
+
+  <!-- ══ 17 ══════════════════════════════════════════ -->
+  <section id="s17">
+    <h2><span class="num">17</span> Risks and open questions</h2>
+
+    <div class="block scroller">
+      <table>
+        <caption>Live risks</caption>
+        <thead><tr><th>Risk</th><th>Severity</th><th>Mitigation</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Single server is a single point of failure</td>
+            <td><span class="pill red">Critical</span></td>
+            <td><a href="#s14">§14</a> in full; consider a warm standby restoring nightly</td>
+          </tr>
+          <tr>
+            <td>Backups silently unreadable</td>
+            <td><span class="pill red">Critical</span></td>
+            <td>Automated restore drill feeding the alert engine</td>
+          </tr>
+          <tr>
+            <td>Opening stock count is wrong</td>
+            <td><span class="pill red">Critical</span></td>
+            <td>Count twice, run parallel for two weeks, budget the time honestly</td>
+          </tr>
+          <tr>
+            <td>Printer model behaves unlike the spec</td>
+            <td><span class="pill amber">High</span></td>
+            <td>Buy the exact unit before Phase 2; the document-plus-agent split confines the damage</td>
+          </tr>
+          <tr>
+            <td>Staff route around the system under pressure</td>
+            <td><span class="pill amber">High</span></td>
+            <td>Sale path must beat pen and paper on speed; measure keystrokes-to-complete as an actual target</td>
+          </tr>
+          <tr>
+            <td>Unit conversions set up wrong at load</td>
+            <td><span class="pill amber">High</span></td>
+            <td>Conversion preview on the product form: "1 BAG = 25 KG = 10 OLONKA"</td>
+          </tr>
+          <tr>
+            <td>Shop registers for VAT later</td>
+            <td><span class="pill blue">Medium</span></td>
+            <td>Dormant tax engine (<a href="#s4">ADR-007</a>) makes this configuration</td>
+          </tr>
+          <tr>
+            <td>Second branch opens</td>
+            <td><span class="pill blue">Medium</span></td>
+            <td><code class="mono">branch_id</code> throughout; transfer movements defined but unused</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3><span class="num">17.1</span> Open questions</h3>
+    <ol>
+      <li><strong>ADR-001</strong> — Kotlin or Java 21. Decided by who maintains this in three years, not by language merits.</li>
+      <li><strong>How many tills</strong> at go-live, and is the server a dedicated mini-PC or does it double as a till? Dedicated is strongly preferred.</li>
+      <li><strong>Does the shop already have a product list</strong> in any digital form, or is Phase 7 a full manual keying exercise?</li>
+      <li><strong>Restricted agro-chemical buyer register</strong> — required by the shop's licence, or a value-add? This changes whether it can be skipped under time pressure.</li>
+      <li><strong>Delivery</strong> — does the shop deliver cement and rods with its own vehicle? If so, delivery notes need a driver, a vehicle and a signature capture, which is a small module not currently scoped.</li>
+      <li><strong>Existing receivables</strong> — do contractor balances need migrating in as opening balances at cutover?</li>
+    </ol>
+  </section>
+
+  </main>
+
+  <footer class="colophon">
+    Counterweight · System architecture, Revision A · Draft for review.
+    Prepared against four fixed constraints: local server only, Windows tills
+    with a local peripherals agent, single shop on a branch-ready schema, and no
+    VAT registration. ADR-001 remains open and blocks nothing.
+  </footer>
+
+</div>

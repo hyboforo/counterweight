@@ -1,0 +1,40 @@
+# What must never reach the build context.
+#
+# Without this the daemon is handed node_modules, every compiled class and the
+# whole of .git before a single instruction runs — minutes of upload for files
+# the build then ignores. The two build stages install and compile from scratch
+# on purpose, so anything here that was built on a workstation would be wrong
+# in the image anyway.
+
+.git/
+.gitignore
+
+# Node — reinstalled from the lockfile in the web stage.
+**/node_modules/
+counterweight-web/dist/
+
+# JVM — recompiled in the server stage.
+**/target/
+**/out/
+*.class
+
+# Secrets. `.env` holds the signing key and the database password, and it is
+# read by compose on the host, never inside an image.
+.env
+.env.*
+*.pem
+*.key
+*.p12
+
+# Local state and tooling.
+.claude/
+.idea/
+.vscode/
+backups/
+**/backups/
+*.dump
+*.log
+
+# The other two things in this repository that the image is not.
+counterweight-agent/
+docs/

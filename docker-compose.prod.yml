@@ -1,0 +1,78 @@
+# ═══════════════════════════════════════════════════════════════════════════
+#  Bofma Ventures — the shop.
+#
+#  Two services and two volumes. `docker-compose.yml` next to this file is the
+#  development database only; this is the one the shop runs, and
+#  `start-counterweight.bat` is the front door to it.
+#
+#      docker compose -f docker-compose.prod.yml up -d
+#
+#  Everything secret comes from `.env`, which the batch file writes on first
+#  run and git ignores. Nothing here has a working default password.
+# ═══════════════════════════════════════════════════════════════════════════
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: bofma-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: counterweight
+      POSTGRES_USER: counterweight
+      # No default. A blank or guessable database password on a shop LAN is the
+      # whole ledger readable by anybody who plugs in.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env — start-counterweight.bat writes one}
+    volumes:
+      - bofma_pgdata:/var/lib/postgresql/data
+    # Deliberately not published. Only the app container needs to reach it, and
+    # a port open on the shop network is a door nobody is watching. Add
+    # `ports: ["5432:5432"]` temporarily if you ever need psql from the host.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U counterweight -d counterweight"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bofma-counterweight:latest
+    container_name: bofma-counterweight
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/counterweight
+      SPRING_DATASOURCE_USERNAME: counterweight
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+
+      # JwtService.verifySecret kills startup on a blank, short or placeholder
+      # value, so a missing one fails here rather than serving anything.
+      # Regenerating it signs out every till — keep the .env file.
+      COUNTERWEIGHT_JWT_SECRET: ${COUNTERWEIGHT_JWT_SECRET:?set COUNTERWEIGHT_JWT_SECRET in .env — start-counterweight.bat writes one}
+
+      # The first two accounts, created once on an empty database. If this is
+      # left unset a password is generated and written to the log exactly once:
+      #   docker compose -f docker-compose.prod.yml logs app
+      COUNTERWEIGHT_BOOTSTRAP_PASSWORD: ${COUNTERWEIGHT_BOOTSTRAP_PASSWORD:-}
+
+      # An unauthenticated schema dump tells anyone on the network which
+      # endpoints exist. Developer tooling, off in the shop.
+      COUNTERWEIGHT_API_DOCS: "false"
+      LOGGING_LEVEL_COM_COUNTERWEIGHT: INFO
+    # Where the nightly dump goes is the shop's decision, not the machine's, so
+    # it is an `app_config` row (`backup.directory`) editable from Settings —
+    # not an environment variable. Its default, `./backups`, resolves to
+    # /app/backups inside the container, which is the volume below. In the shop
+    # that volume should be bound to the SECOND physical disk: a backup on the
+    # disk that failed is not a backup.
+    volumes:
+      - bofma_backups:/app/backups
+    ports:
+      - "8080:8080"
+
+volumes:
+  bofma_pgdata:
+  bofma_backups:

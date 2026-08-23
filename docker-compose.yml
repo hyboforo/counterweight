@@ -1,0 +1,38 @@
+# Local development only.
+#
+# In production Counterweight runs on a single machine inside the shop, with
+# PostgreSQL installed directly on the host rather than in a container — one
+# less moving part for a site with no developer on it. See docs/architecture.html §3.
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: counterweight-postgres
+    environment:
+      POSTGRES_DB: counterweight
+      POSTGRES_USER: counterweight
+      POSTGRES_PASSWORD: counterweight
+    ports:
+      # 5434 to avoid colliding with a local install on 5432 and with
+      # taskers-ghana on 5433.
+      - "5434:5432"
+    volumes:
+      - counterweight_pg_data:/var/lib/postgresql/data
+      # The migration directory used to be mounted at /docker-entrypoint-initdb.d
+      # so a fresh container came up with the baseline applied. That has to stay
+      # off now the server exists: the entrypoint runs every *.sql in there on
+      # first init, which would apply V1–V4 with no flyway_schema_history to
+      # show for it, and Flyway — configured with baseline-on-migrate: false —
+      # then refuses to start against a populated schema it has no record of.
+      #
+      # Bring the container up empty and let the server migrate it. A database
+      # created under the old mount has to be dropped once:
+      #   docker compose down -v && docker compose up -d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U counterweight -d counterweight"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  counterweight_pg_data:

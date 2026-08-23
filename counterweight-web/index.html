@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Without this the browser falls back to the system codepage and every
+         Ghanaian name with a non-ASCII character renders as mojibake. -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0B5563" />
+    <title>Bofma Ventures</title>
+    <!-- No web font.
+
+         This shop is built to keep selling with the internet down, and a
+         stylesheet fetched from fonts.googleapis.com is a request that hangs
+         when it is. The font stacks in tokens.css already fall back to Segoe UI
+         and Consolas, which is what the till is running on anyway; the server
+         also serves the app under a `default-src 'self'` policy, which would
+         refuse the remote sheet regardless. -->
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+-- ═══════════════════════════════════════════════════════════════════════════
+--  V10 — remove the auth settings nothing reads
+--
+--  V9 claimed to end the overlap between `app_config` and `application.yml`.
+--  It ended it for the shop's settings and missed nine rows V2 had seeded for
+--  authentication policy — lockout thresholds, token lifetimes, the rate
+--  limit — every one of which is read from `AuthProperties` in yml and from
+--  nowhere else. An owner lowering `auth.lockout.max-attempts` here would have
+--  changed nothing at all.
+--
+--  A separate migration rather than an edit to V9, which is already applied:
+--  changing an applied migration breaks Flyway's checksum and is the one rule
+--  a migration tool exists to enforce.
+--
+--  These go rather than getting wired up, and the distinction is the one
+--  ConfigService documents. `app_config` holds what the *shop* decides;
+--  `application.yml` holds what the *machine* needs and what must not be
+--  changeable from a screen. Brute-force lockout is the second kind: an
+--  endpoint that can set max-attempts to 9999 is an endpoint that can switch
+--  off the protection, and CONFIG_MANAGE is a different permission from the
+--  ones that govern accounts.
+--
+--  What remains in app_config after this is true: every row is read by code.
+
+DELETE FROM app_config WHERE key LIKE 'auth.%';

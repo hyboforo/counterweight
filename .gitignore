@@ -1,0 +1,56 @@
+# ── JVM ──────────────────────────────────────────────
+target/
+build/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+!gradle/wrapper/gradle-wrapper.jar
+hs_err_pid*
+replay_pid*
+
+# ── Node ─────────────────────────────────────────────
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.local
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ── Environment and secrets ──────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+application-local.yml
+application-local.properties
+
+# ── Agent build output ───────────────────────────────
+counterweight-agent/out/
+counterweight-agent/*.msi
+counterweight-agent/*.exe
+
+# ── Database and backups ─────────────────────────────
+*.dump
+*.sql.gz
+pgdata/
+
+# ── IDE ──────────────────────────────────────────────
+.idea/
+*.iml
+*.iws
+.vscode/
+!.vscode/extensions.json
+*.swp
+
+# ── OS ───────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Tooling scratch ──────────────────────────────────
+.venv/
+__pycache__/
