@@ -11,6 +11,15 @@
 #  run and git ignores. Nothing here has a working default password.
 # ═══════════════════════════════════════════════════════════════════════════
 
+# Its own project namespace, and not cosmetic.
+#
+# Without this, compose derives the project from the directory name and this
+# file shares it with `docker-compose.yml` next door — same project, same
+# service called `postgres`. Starting the shop then tries to recreate the
+# development database as if it were the same container, which is how you lose
+# a database you were only trying to leave alone.
+name: bofma
+
 services:
   postgres:
     image: postgres:16
