@@ -14,7 +14,7 @@
  *
  * `id` is both the path under `/api/reports/` and the `report` parameter the
  * export endpoint takes. Keeping them the same string is what lets one screen
- * run and export seventeen reports without a switch statement per report.
+ * run and export eighteen reports without a switch statement per report.
  */
 
 export type ReportFamily = "Sales" | "Inventory" | "Money" | "Control" | "Compliance";
@@ -121,6 +121,16 @@ export const REPORTS: ReportDef[] = [
     needs: ["REPORT_VIEW"],
     params: ["dates"],
     note: "What was taken each day, split by till and how it was paid.",
+  },
+  {
+    id: "money/collections",
+    name: "Collections",
+    family: "Money",
+    needs: ["REPORT_VIEW"],
+    params: ["dates"],
+    note:
+      "What the owner took away, tender by tender, against what the sales said " +
+      "should be there. A shortage shows as a negative difference.",
   },
   {
     id: "money/discounts",

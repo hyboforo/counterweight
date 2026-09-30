@@ -495,7 +495,7 @@ export interface Statement {
  * A report as the server reduces it: headers, then rows of values.
  *
  * Every report has this shape, which is why the screen has one table renderer
- * rather than seventeen. The server builds it once and serves both the screen
+ * rather than eighteen. The server builds it once and serves both the screen
  * and the export from that same definition — the failure it exists to prevent
  * is an owner emailing an accountant figures that do not match the till.
  *
@@ -634,4 +634,48 @@ export interface BackupRunView {
   verifiedAt: string | null;
   error: string | null;
   verifyError: string | null;
+}
+
+/* ── Collections ────────────────────────────────────────────────────────── */
+
+/** Every tender that brings money in. ON_ACCOUNT is collected through the customer's account. */
+export type CollectedTender = "CASH" | "MOBILE_MONEY" | "BANK_TRANSFER" | "CHEQUE" | "CARD";
+
+/**
+ * What a collection made at `until` would cover.
+ *
+ * `until` is the moment the figures were read, and is what the screen sends
+ * back as the collection's time — a sale rung up while the owner is counting
+ * belongs to the next collection, not to this one as a shortage.
+ */
+export interface PendingCollectionView {
+  previousNumber: string | null;
+  periodFrom: string | null;
+  until: string;
+  /** Every tender, zero included. Net of voids and counter refunds. */
+  tenders: { method: CollectedTender; expected: string }[];
+  expectedTotal: string;
+}
+
+export interface CollectionLineView {
+  method: CollectedTender;
+  expected: string;
+  collected: string;
+  /** Collected less expected: negative is a shortage. */
+  difference: string;
+}
+
+export interface CollectionView {
+  id: number;
+  number: string;
+  /** Null for the branch's first collection, which covers everything before it. */
+  periodFrom: string | null;
+  collectedAt: string;
+  recordedAt: string;
+  collectedByName: string;
+  note: string | null;
+  tenders: CollectionLineView[];
+  expectedTotal: string;
+  collectedTotal: string;
+  difference: string;
 }

@@ -5,9 +5,9 @@ shop. Designed to keep selling when the power and the internet do not.
 
 > **Status — server complete, till complete, back office complete.**
 > The full architecture is in [`docs/architecture.html`](docs/architecture.html).
-> All eleven server modules are built against fifteen migrations. The till sells
+> All eleven server modules are built against seventeen migrations. The till sells
 > end to end. The back office has goods receipt, stock takes, receivables,
-> reports, the catalogue, staffing and the shop's settings. The peripherals
+> collections, reports, the catalogue, staffing and the shop's settings. The peripherals
 > agent is built and prints to the shop's Syncotek over USB.
 
 ## Layout
@@ -44,10 +44,21 @@ working in it. Start with [`docs/README.md`](docs/README.md).
 
 | Component | State |
 |---|---|
-| `counterweight-server` | **Complete for scope.** Eleven modules — `platform`, `identity`, `catalog`, `inventory`, `pricing`, `parties`, `sales`, `billing`, `printing`, `alerting`, `reporting` — on fifteen migrations |
+| `counterweight-server` | **Complete for scope.** Eleven modules — `platform`, `identity`, `catalog`, `inventory`, `pricing`, `parties`, `sales`, `billing`, `printing`, `alerting`, `reporting` — on seventeen migrations |
 | `counterweight-web` — till | **Complete.** Sign-in, search and scanning, held sales, split tender, credit check, supervisor PIN, optional receipt printing |
-| `counterweight-web` — back office | **Complete for scope.** Goods receipt, stock takes, receivables, reports, catalogue maintenance, staffing (users and roles) and the shop's settings, including backups |
+| `counterweight-web` — back office | **Complete for scope.** Goods receipt, stock takes, receivables, collections, reports, catalogue maintenance, staffing (users and roles) and the shop's settings, including backups |
 | `counterweight-agent` | **Built.** ESC/POS print agent on each till — USB via the Windows spooler, network and serial too. The shop's printer is a Syncotek on USB |
+
+**Collections are the owner's alone.** Every so often the owner takes away what
+the shop has taken in and records it as a collection (`COL-000001`): when, who,
+and for each tender — cash, mobile money, transfers, cheques, card — what the
+sales say should be there against what was counted. Collections chain in the
+schema, each starting where the last one ended, so every payment, void and
+counter refund lands in exactly one of them. A count that differs from the
+sales needs a reason, and a recorded collection can never be edited. Only
+`ADMIN` holds `SALES_COLLECT` (V17); the collections report sits under Money
+behind `REPORT_VIEW`, so an auditor can read what was collected without being
+able to collect.
 
 **A supervisor's till PIN can be set only by its owner.** An administrator can
 take one away and cannot choose one, because an override is recorded against
@@ -171,7 +182,7 @@ and what that costs.
 
 Two layers, and both need Docker running.
 
-**The JVM suite** — **231 tests across twelve classes, all passing**, one class
+**The JVM suite** — **247 tests across thirteen classes, all passing**, one class
 per module. Testcontainers against real PostgreSQL 16 rather than H2,
 deliberately: the invariants under test are triggers, partial unique indexes and
 check constraints that H2 does not reproduce.

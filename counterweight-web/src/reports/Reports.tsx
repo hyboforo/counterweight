@@ -11,7 +11,7 @@ import { FAMILIES, visibleTo, type ReportDef } from "./catalogue";
  *
  * One screen for all of them, because the server reduces every report to the
  * same grid and builds the export from that same definition. Seventeen bespoke
- * screens would be seventeen chances for what is on the screen to stop matching
+ * screens would be eighteen chances for what is on the screen to stop matching
  * what comes out of the export, which is the thing §12 is careful about.
  *
  * The rail lists only what this account may run — see `catalogue.ts` for why

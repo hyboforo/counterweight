@@ -97,6 +97,17 @@ class ReportService(
     fun takings(from: LocalDate, to: LocalDate): List<TakingsRow> =
         queries.takings(branchId, from.startOfDay(), to.endOfDay())
 
+    /**
+     * What the owner collected, against what the sales said should be there.
+     *
+     * `REPORT_VIEW`, not `SALES_COLLECT`: reading what was collected is not
+     * collecting, and an auditor checking the takings has to be able to see it.
+     */
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAuthority('REPORT_VIEW')")
+    fun collections(from: LocalDate, to: LocalDate): List<CollectionRow> =
+        queries.collections(branchId, from.startOfDay(), to.endOfDay())
+
     @Transactional(readOnly = true)
     @PreAuthorize("hasAuthority('REPORT_VIEW')")
     fun discountRegister(from: LocalDate, to: LocalDate): List<DiscountRow> =
