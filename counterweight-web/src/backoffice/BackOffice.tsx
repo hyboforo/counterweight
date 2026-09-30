@@ -5,6 +5,7 @@ import { People } from "../admin/People";
 import { Settings } from "../admin/Settings";
 import { CountSheet } from "../stock/CountSheet";
 import { Catalogue } from "../catalog/Catalogue";
+import { Collections } from "../collections/Collections";
 import { Receivables } from "../parties/Receivables";
 import { GoodsReceipt } from "../stock/GoodsReceipt";
 import { Reports } from "../reports/Reports";
@@ -17,6 +18,7 @@ type Section =
   | "takes"
   | "catalogue"
   | "receivables"
+  | "collections"
   | "reports"
   | "people"
   | "settings";
@@ -45,6 +47,9 @@ export function BackOffice({
   const mayReceive = can("STOCK_RECEIVE");
   const mayCount = can("STOCK_COUNT");
   const mayCollect = can("CUSTOMER_MANAGE");
+  // Taking the takings away is the owner's alone (V17). The people who ring
+  // up the sales are not the ones who sign their takings off.
+  const mayCollectTakings = can("SALES_COLLECT");
   // The catalogue is PRODUCT_MANAGE work throughout — creating, renaming,
   // units. PRICE_VIEW and PRICE_MANAGE only decide how much of a product
   // screen a storekeeper sees once they are in it.
@@ -71,11 +76,13 @@ export function BackOffice({
           ? "catalogue"
           : mayCollect
             ? "receivables"
-            : mayReport
-              ? "reports"
-              : mayStaff
-                ? "people"
-                : "settings",
+            : mayCollectTakings
+              ? "collections"
+              : mayReport
+                ? "reports"
+                : mayStaff
+                  ? "people"
+                  : "settings",
   );
   const [screen, setScreen] = useState<Screen>({ name: "list" });
   const [nonce, setNonce] = useState(0);
@@ -123,6 +130,11 @@ export function BackOffice({
             Money owed
           </Tab>
         )}
+        {mayCollectTakings && (
+          <Tab active={section === "collections"} onClick={() => go("collections")}>
+            Collections
+          </Tab>
+        )}
         {mayReport && (
           <Tab active={section === "reports"} onClick={() => go("reports")}>
             Reports
@@ -146,6 +158,8 @@ export function BackOffice({
         {section === "catalogue" && mayCatalogue && <Catalogue />}
 
         {section === "receivables" && mayCollect && <Receivables />}
+
+        {section === "collections" && mayCollectTakings && <Collections />}
 
         {section === "reports" && mayReport && <Reports />}
 

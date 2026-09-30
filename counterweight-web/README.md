@@ -12,9 +12,10 @@ React 18 + Vite + TypeScript + Tailwind. Two surfaces in one build:
 Built output is served by `counterweight-server` over the shop LAN. There is no
 separate web host.
 
-**The till and the back office are both built.** The back office has seven
+**The till and the back office are both built.** The back office has eight
 sections — goods receipt (`STOCK_RECEIVE`), stock takes (`STOCK_COUNT`), the
-catalogue (`PRODUCT_MANAGE`), receivables (`CUSTOMER_MANAGE`), reports
+catalogue (`PRODUCT_MANAGE`), receivables (`CUSTOMER_MANAGE`), collections
+(`SALES_COLLECT`), reports
 (`REPORT_VIEW` or `AUDIT_VIEW`), people (`USER_MANAGE` or `ROLE_ASSIGN`) and
 settings (`CONFIG_MANAGE` or `BACKUP_MANAGE`) — tab-switched, and each tab
 appears only for the permission that owns it.
@@ -140,7 +141,23 @@ starts. A row priced from the default list while a trade list is selected says
 so — a contractor price that is quietly the walk-in one is worth seeing before
 somebody quotes it.
 
-**Reports** — the seventeen reports of §12, in one screen. The rail lists only
+**Collections** — the owner taking the takings away. The screen opens on what
+is waiting to be collected since the last collection, one row per tender, and
+the owner types what they counted beside what the sales say. Cash always has a
+row; any other tender only when some came in, because a box that can only ever
+say 0.00 is how the one that matters gets skipped. A difference turns the note
+into a required field.
+
+**The figures are read at a moment, and that moment is the collection's time.**
+A sale rung up while the owner is counting lands in the next collection instead
+of showing up here as a shortage nobody saw. The owner can set the time earlier
+— money taken at five and written down at half six — and the figures re-read
+for that time. The expected figures go back to the server exactly as they were
+shown; if the sales moved anyway, the server refuses the record rather than
+storing a difference that was never on screen.
+
+**Reports** — the seventeen reports of §12, plus the collections register, in
+one screen. The rail lists only
 what the account may run, because the permissions are split deliberately:
 `REPORT_VIEW` sees trade, `COST_VIEW` is what adds cost and margin, and the four
 control registers need `AUDIT_VIEW`. Offering a row that answers 403 when

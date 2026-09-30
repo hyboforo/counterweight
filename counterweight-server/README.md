@@ -188,6 +188,43 @@ wrote the hash through the repository, which no screen could do;
 `SecurityIntegrationTest.the override pin round trip` now sets one through the
 API and verifies the till accepts it.
 
+### Collections: counted by the person taking the money
+
+The owner takes away what the shop has taken in and records a collection
+(`POST /api/collections`, `COL-000001`): when it happened, and for every tender
+that brings money in, what the sales say should be there against what was
+counted. `ON_ACCOUNT` is not one of them — nothing changed hands.
+
+This is not the cash session V13 removed. That compared a drawer nobody counts
+with a float nobody puts in. A collection is counted by whoever carries the
+money off, which makes it an independent observation, and the only kind worth
+comparing the sales against.
+
+**What should be there is counted by when things happened.** Payments at their
+sale's completion, voids at the void, counter refunds at the refund — so a sale
+collected last week and voided today comes off today's collection, and one
+completed and voided inside a period nets to nothing. `movements` in
+`CollectionRepositories.kt` is the whole rule.
+
+**The chain is held by the schema.** V17 gives each collection its
+predecessor, `UNIQUE (previous_id)` stops two admins claiming the same period,
+a trigger refuses a period that does not start where the last one ended, and
+both tables reject `UPDATE` and `DELETE` like `audit_log`. A correction is the
+next collection. `CollectionService.record` takes the numbering lock before it
+reads anything, so two admins recording at once queue rather than collide.
+
+**The owner may date a collection earlier, never later.** Money taken at five
+and written down at half six is collected at five, and the sales in between go
+into the next one. A count that differs from the sales needs a reason. The
+screen sends back the expected figures it showed, and a mismatch is refused,
+because a difference stored against figures nobody saw is worse than none.
+
+`SALES_COLLECT` is granted to `ADMIN` only. Not `SYSTEM_ADMIN`, which holds
+nothing commercial, and not the roles that ring up the sales — the same line
+V11 draws between counting stock and signing the shortage away. The
+collections report (`/api/reports/money/collections`) is behind `REPORT_VIEW`,
+so an auditor reads what was collected without being able to collect.
+
 ### Configuration: which file wins
 
 `app_config` holds what the **shop** decides — rounding increment, paper width,
@@ -292,6 +329,7 @@ before `./mvnw test`. H2 reproduces none of what these suites check.
 | `ReportingTest` | Rollup/rebuild agreement, traceability, ABC, export formats |
 | `PricingConformanceTest` | Price windows, list fallback, compound tax basis |
 | `CustomerAccountTest` | Allocation order, sign convention, credit gating |
+| `CollectionTest` | Chained periods, voids and refunds across a boundary, the count, who may collect |
 | `SecurityIntegrationTest` | Filter chain, method security, account rules |
 | `CategoryPathTest` | The `ltree` ↔ `@Formula` seam, through both read paths |
 

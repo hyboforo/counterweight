@@ -44,6 +44,7 @@ function Shell() {
     can("STOCK_COUNT") ||
     can("STOCK_RECEIVE") ||
     can("CUSTOMER_MANAGE") ||
+    can("SALES_COLLECT") ||
     can("PRODUCT_MANAGE") ||
     can("REPORT_VIEW") ||
     can("AUDIT_VIEW") ||

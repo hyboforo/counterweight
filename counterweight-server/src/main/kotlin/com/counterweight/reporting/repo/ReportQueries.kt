@@ -110,6 +110,18 @@ interface TakingsRow {
     val saleCount: Int
 }
 
+interface CollectionRow {
+    val number: String
+    val collectedAt: Instant
+    val periodFrom: Instant?
+    val collectedByName: String
+    val method: String
+    val expected: BigDecimal
+    val collected: BigDecimal
+    val difference: BigDecimal
+    val note: String?
+}
+
 interface RegisterRow {
     val occurredAt: Instant
     val actorName: String
@@ -450,6 +462,43 @@ interface ReportQueries : JpaRepository<Alert, Long> {
         @Param("from") from: Instant,
         @Param("until") until: Instant,
     ): List<TakingsRow>
+
+    /**
+     * Every collection, one row per tender counted.
+     *
+     * Direct rather than rolled up: collections are few, and the figures are
+     * the record of what was handed over, so they are read as written. By
+     * tender rather than one total per collection because a shortage in cash
+     * is not made good by a surplus in mobile money, and a total would show
+     * the two cancelling out.
+     */
+    @Query(
+        value = """
+            SELECT c.number                 AS "number",
+                   c.collected_at           AS "collectedAt",
+                   c.period_from            AS "periodFrom",
+                   u.full_name              AS "collectedByName",
+                   l.method                 AS "method",
+                   l.expected               AS "expected",
+                   l.collected              AS "collected",
+                   l.collected - l.expected AS "difference",
+                   c.note                   AS "note"
+              FROM sales_collection c
+              JOIN sales_collection_line l ON l.collection_id = c.id
+              JOIN app_user u ON u.id = c.collected_by
+             WHERE c.branch_id = :branchId
+               AND c.collected_at >= :from AND c.collected_at < :until
+             ORDER BY c.collected_at DESC,
+                      CASE l.method WHEN 'CASH' THEN 0 WHEN 'MOBILE_MONEY' THEN 1
+                                    WHEN 'BANK_TRANSFER' THEN 2 WHEN 'CHEQUE' THEN 3 ELSE 4 END
+        """,
+        nativeQuery = true,
+    )
+    fun collections(
+        @Param("branchId") branchId: Long,
+        @Param("from") from: Instant,
+        @Param("until") until: Instant,
+    ): List<CollectionRow>
 
     /**
      * Every discount given, with who authorised it.

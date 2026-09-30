@@ -165,6 +165,21 @@ class ReportController(
             "Total" to { r -> r.total },
         )
 
+    @GetMapping("/money/collections")
+    fun collections(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) from: LocalDate,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) to: LocalDate) =
+        table("Collections", reports.collections(from, to),
+            "Collection" to { r -> r.number },
+            "Collected at" to { r -> r.collectedAt },
+            "Covers from" to { r -> r.periodFrom },
+            "Collected by" to { r -> r.collectedByName },
+            "Method" to { r -> r.method },
+            "Expected" to { r -> r.expected },
+            "Collected" to { r -> r.collected },
+            "Difference" to { r -> r.difference },
+            "Note" to { r -> r.note },
+        )
+
     @GetMapping("/money/discounts")
     fun discounts(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) from: LocalDate,
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) to: LocalDate) =
@@ -303,6 +318,7 @@ class ReportController(
             "inventory/abc" -> abc(start, end)
             "inventory/expiry-ageing" -> expiryAgeing()
             "money/takings" -> takings(start, end)
+            "money/collections" -> collections(start, end)
             "money/discounts" -> discounts(start, end)
             "compliance/restricted-sales" -> restrictedSales(start, end)
             "compliance/trace" -> trace(
